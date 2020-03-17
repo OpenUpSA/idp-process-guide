@@ -41,6 +41,7 @@ export class Marker {
 
         setTimeout(() => {
             this.setPhaseMarkerPositions(phaseId, phaseObj);
+            this.setPhaseTodayBtnPosition(phaseObj);
         }, 750)
     }
 
@@ -64,6 +65,12 @@ export class Marker {
             $(this).css('transition-duration', '0.5s');
             self.setObjLeftPosition(this, leftOffset, 'px');
         });
+    }
+
+    setPhaseTodayBtnPosition = (phaseObj) => {
+        let leftOffset = this.calculateDateLeftOffset(phaseObj, todayBtnClsName, true);
+        $(todayBtnClsName).css('transition-duration', '0.5s');
+        this.setObjLeftPosition(todayBtnClsName, leftOffset, 'px');
     }
 
     setTodayBtnVisibility = (phaseObj) => {
@@ -120,7 +127,12 @@ export class Marker {
     setTodayBtnPosition = () => {
         let date = new Date();
 
-        let percentage = this.calculateDatePercentage(date);
+        let percentage = 0;
+        if (!phaseOpen) {
+            percentage = this.calculateDatePercentage(date);
+        } else {
+            percentage = 90;
+        }
         this.setObjLeftPosition(todayBtnClsName, percentage);
     }
 
@@ -142,12 +154,17 @@ export class Marker {
         return percentage;
     }
 
-    calculateDateLeftOffset = (phaseObj, marker) => {
+    calculateDateLeftOffset = (phaseObj, marker, isTodayBtn = false) => {
         let startOffset = $(phaseObj).offset().left - $('.year').offset().left;
         let totalWidth = $(phaseObj).width();    // (* percentage) + startOffset
         let periodStart = this.convertStringToDate($(phaseObj).attr('data-start'));
         let periodEnd = this.convertStringToDate($(phaseObj).attr('data-end'));
-        let markerDate = this.convertStringToDate($(marker).attr('data-date'));
+        let markerDate;
+        if (isTodayBtn) {
+            markerDate = new Date();
+        } else {
+            markerDate = this.convertStringToDate($(marker).attr('data-date'));
+        }
         let percentage = this.calculateDatePercentage(markerDate, periodStart, periodEnd);
         let offset = (totalWidth * percentage / 100) + startOffset;
         console.log('percentage : ' + percentage + ' offset : ' + offset + ' totalWidth : ' + totalWidth);
