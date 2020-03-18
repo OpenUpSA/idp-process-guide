@@ -25,7 +25,7 @@
     "build": "parcel build ./src/index.html --public-url ./ ",
     "push-prod": "push-dir --dir=dist --branch=gh-pages --cleanup --verbose",
     "push-staging": "push-dir --remote=staging --dir=dist --branch=gh-pages --cleanup --verbose",
-    "clean-files": "cp dist/js*.js dist/wazimap-ng.js; cp dist/js*.js.map dist/wazimap-ng.js.map; cp dist/js*.css dist/wazimap-ng.css"
+    "clean-files": "cp dist/js*.js dist/idp.js; cp dist/js*.js.map dist/idp.js.map; cp dist/js*.css dist/idp.css"
   },
   "browserslist": "> 0.25%, not dead"
 }
