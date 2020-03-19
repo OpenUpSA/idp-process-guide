@@ -22,11 +22,19 @@ export class Marker {
         });
 
         $('.reset').on('click', function (e) {
-            if (phaseOpen) {
-                phaseOpen = false;
-                self.phaseClosed();
-            }
+            self.phaseCloseClicked();
         });
+
+        $('.reset-button').on('click', function () {
+            self.phaseCloseClicked();
+        });
+    }
+
+    phaseCloseClicked = () => {
+        if (phaseOpen) {
+            phaseOpen = false;
+            this.phaseClosed();
+        }
     }
 
     setCurrentDatePhase = () => {
