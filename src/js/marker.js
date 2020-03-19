@@ -3,11 +3,13 @@ const todayBtnClsName = '.today-marker';
 let calendarStartDate = null;
 let calendarEndDate = null;
 let phaseOpen = false;
+let currentDatePhase = 1;
 
 export class Marker {
     constructor() {
         this.setDomElements();
 
+        this.setCurrentDatePhase();
         this.setMarkerStartPositions();
     }
 
@@ -20,11 +22,39 @@ export class Marker {
         });
 
         $('.reset').on('click', function (e) {
-            if (phaseOpen) {
-                phaseOpen = false;
-                self.phaseClosed();
+            self.phaseCloseClicked();
+        });
+
+        $('.reset-button').on('click', function () {
+            self.phaseCloseClicked();
+        });
+    }
+
+    phaseCloseClicked = () => {
+        if (phaseOpen) {
+            phaseOpen = false;
+            this.phaseClosed();
+        }
+    }
+
+    setCurrentDatePhase = () => {
+        currentDatePhase = this.getPhaseIdOfDate(new Date());
+    }
+
+    getPhaseIdOfDate = (date) => {
+        let self = this;
+        let id = 1;
+
+        $('.phase').each(function () {
+            let phaseStart = self.convertStringToDate($(this).attr('data-start'));
+            let phaseEnd = self.convertStringToDate($(this).attr('data-end'));
+
+            if (phaseStart < date && date < phaseEnd) {
+                id = self.getPhaseId(this);
             }
         });
+
+        return id;
     }
 
     setMarkerStartPositions = () => {
@@ -37,7 +67,6 @@ export class Marker {
     phaseClicked = (phaseObj) => {
         phaseOpen = true;
         let phaseId = this.getPhaseId(phaseObj);
-        this.setTodayBtnVisibility(phaseObj);
 
         setTimeout(() => {
             this.setPhaseMarkerPositions(phaseId, phaseObj);
@@ -68,21 +97,11 @@ export class Marker {
     }
 
     setPhaseTodayBtnPosition = (phaseObj) => {
-        let leftOffset = this.calculateDateLeftOffset(phaseObj, todayBtnClsName, true);
+        let todaysPhase = $('.phase._' + currentDatePhase)[0];
         $(todayBtnClsName).css('transition-duration', '0.5s');
+        let leftOffset = this.calculateDateLeftOffset(todaysPhase, null, true);
+
         this.setObjLeftPosition(todayBtnClsName, leftOffset, 'px');
-    }
-
-    setTodayBtnVisibility = (phaseObj) => {
-        let periodStart = this.convertStringToDate($(phaseObj).attr('data-start'));
-        let periodEnd = this.convertStringToDate($(phaseObj).attr('data-end'));
-        let date = new Date();
-
-        if (periodStart < date && date < periodEnd) {
-            $(todayBtnClsName).show();
-        } else {
-            $(todayBtnClsName).hide();
-        }
     }
 
     phaseClosed = () => {
@@ -167,7 +186,6 @@ export class Marker {
         }
         let percentage = this.calculateDatePercentage(markerDate, periodStart, periodEnd);
         let offset = (totalWidth * percentage / 100) + startOffset;
-        console.log('percentage : ' + percentage + ' offset : ' + offset + ' totalWidth : ' + totalWidth);
 
         return offset;
     }
