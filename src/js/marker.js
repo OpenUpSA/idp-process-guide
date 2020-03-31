@@ -4,6 +4,7 @@ let calendarStartDate = null;
 let calendarEndDate = null;
 let phaseOpen = false;
 let currentDatePhase = 1;
+let openPhaseId = 0;
 
 export class Marker {
     constructor() {
@@ -70,11 +71,12 @@ export class Marker {
     }
 
     phaseClicked = (phaseObj) => {
-        if (phaseOpen) {
+        let phaseId = this.getPhaseId(phaseObj);
+        if (phaseOpen && phaseId === openPhaseId) {
             return;
         }
         phaseOpen = true;
-        let phaseId = this.getPhaseId(phaseObj);
+        openPhaseId = phaseId;
 
         setTimeout(() => {
             this.setPhaseMarkerPositions(phaseId, phaseObj);
