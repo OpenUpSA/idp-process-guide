@@ -1,3 +1,20 @@
 import {Load} from "./load";
 
-const load = new Load();
+const hostname = window.location.hostname;
+
+const profiles = {
+    'localhost': {
+        baseUrl: 'http://192.168.1.13:8000/api/v1'
+    },
+};
+
+const init = () => {
+    let p = profiles[hostname];
+    if (typeof p === 'undefined') {
+        p = profiles['localhost']; //todo: this is temp, change here
+    }
+    const load = new Load(p);
+}
+
+init();
+

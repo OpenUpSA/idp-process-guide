@@ -4,8 +4,7 @@
   "main": "index.js",
   "author": "Adi Eyal <adi@openup.org.za>",
   "license": "MIT",
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "@babel/cli": "^7.8.3",
     "@babel/core": "^7.8.3",
