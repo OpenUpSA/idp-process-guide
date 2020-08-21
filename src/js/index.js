@@ -13,6 +13,9 @@ const init = () => {
     if (typeof p === 'undefined') {
         p = profiles['localhost']; //todo: this is temp, change here
     }
+
+    p.baseUrl = p.baseUrl + '/host/' + hostname;
+
     const load = new Load(p);
 }
 

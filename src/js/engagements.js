@@ -12,6 +12,8 @@ const activeLinkClassName = 'w--current';
 
 let categoryContentClone = null;
 let categoryContentWrapper = null;
+
+let emptyCategoryClone = null;
 /* category */
 
 /* engagement */
@@ -20,12 +22,14 @@ let engagementRowClone = null;
 
 const engagementClass = '.engagement-block';
 const engagementRowClass = '.engagement-block__details_row';
-
 /* engagement */
+
+let allEngagements = null;
+let allCategories = null;
 
 export class Engagements {
     constructor(baseUrl) {
-        apiUrl = `${baseUrl}/geography/${muniCode}/events`;
+        apiUrl = `${baseUrl}/events`;
 
         //tab-link
         this.setDomElements();
@@ -43,20 +47,28 @@ export class Engagements {
         engagementClone = $(engagementClass)[0].cloneNode(true);
         engagementRowClone = $(engagementRowClass)[0].cloneNode(true);
 
-        $(categoryLinkWrapper).html('');
-        $(categoryContentWrapper).html('');
+        emptyCategoryClone = $('.tab-pane__empty')[0].cloneNode(true);
+
+        $(categoryLinkWrapper).empty();
+        $(categoryContentWrapper).empty();
     }
 
     getEngagements = () => {
         fetch(apiUrl)
             .then(data => data.json())
             .then(data => {
-                this.setCategories(data);
+                allEngagements = data;
+                this.showCategories(data);
             })
     }
 
-    setCategories = (engagements) => {
-        let self = this;
+    showCategories = (engagements) => {
+        let categories = this.getCategoriesFromEngagements(engagements);
+        allCategories = categories;
+        this.filterEngagements(90);
+    }
+
+    getCategoriesFromEngagements = (engagements) => {
         let categories = [{
             'id': 0,
             'name': 'All',
@@ -66,13 +78,26 @@ export class Engagements {
             categories.push(e.category);
         });
 
-        categories = $.unique(categories);
+        categories = categories.reduce(function (memo, e1) {
+            let matches = memo.filter(function (e2) {
+                return e1.id == e2.id && e1.id == e2.id
+            })
+            if (matches.length == 0)
+                memo.push(e1)
+            return memo;
+        }, []);
 
+        return categories;
+    }
+
+    createCategoryLinkAndContent = (categories, engagements) => {
+        let self = this;
+        $(categoryLinkWrapper).empty();
+        $(categoryContentWrapper).empty();
         categories.forEach(c => {
             self.createCategoryLink(c);
             self.createCategoryContent(c, engagements);
         })
-
         this.setActiveCategory(0);  //all
     }
 
@@ -103,7 +128,7 @@ export class Engagements {
         $(item).removeClass('w--tab-active');
         $(item).removeAttr('data-w-tab');
 
-        $(item).html('');
+        $(item).empty();
     }
 
     setCategoryContentData = (wrapper, c, engagements) => {
@@ -117,20 +142,26 @@ export class Engagements {
         }
 
         //data is filtered
-        data.forEach((e) => {
-            let item = engagementClone.cloneNode(true);
-            $('.engagement-block__header .engagement-block__icon div', item).attr('class', e.category.icon);
-            $('.engagement-block__header .engagement-block__title', item).text(e.title);
+        if (data !== null && data.length > 0) {
+            data.forEach((e) => {
+                let item = engagementClone.cloneNode(true);
+                $('.engagement-block__header .engagement-block__icon div', item).attr('class', e.category.icon);
+                $('.engagement-block__header .engagement-block__title', item).text(e.title);
 
-            $('.engagement-block__details', item).html('');
-            self.appendRowToEngagementBlock(item, 'fa fa-info', e.short_desc, false);
-            self.appendRowToEngagementBlock(item, 'fa fa-calendar', e.confirmed_date, false);
-            e.actions.forEach((a) => {
-                self.appendRowToEngagementBlock(item, a.icon, a.raw_html, true);
+                $('.engagement-block__details', item).html('');
+                self.appendRowToEngagementBlock(item, 'fa fa-info', e.short_desc, false);
+                self.appendRowToEngagementBlock(item, 'fa fa-calendar', e.confirmed_date, false);
+                e.actions.forEach((a) => {
+                    self.appendRowToEngagementBlock(item, a.icon, a.description_html, true);
+                })
+
+                $(wrapper).append(item);
             })
-
+        } else {
+            //no data for the category
+            let item = emptyCategoryClone.cloneNode(true);
             $(wrapper).append(item);
-        })
+        }
     }
 
     appendRowToEngagementBlock = (item, iconClass, text, parseAsHtml = false) => {
@@ -162,15 +193,25 @@ export class Engagements {
 
     setFiltering = () => {
         let self = this;
-        $('a.language-link').each(function () {
+        $('a.events-range__row').each(function () {
             $(this).on('click', () => {
+                $('.events-range__selector div:nth-child(2)').text($(this).find('div').text());
+                $('.events-range__selector').removeClass('w--open');
+                $('.events-range__list').removeClass('w--open');
+                $('.events-range__selector').attr('aria-expanded', false);
                 let filterDays = $(this).attr('data-filterDays');
                 self.filterEngagements(filterDays);
             })
         });
     }
 
-    filterEngagements = (filterDays) => {
-
+    filterEngagements = (filterDayCount) => {
+        //filter engagements from allEngagements
+        //call createCategoryLinkAndContent -> categories = allCategories, engagements = filteredEngagements
+        let filterDate = new Date(new Date().getTime() + (filterDayCount * 24 * 60 * 60 * 1000));
+        let engagements = allEngagements.filter((e) => {
+            return (new Date(e.confirmed_date) <= filterDate)
+        });
+        this.createCategoryLinkAndContent(allCategories, engagements);
     }
 }
