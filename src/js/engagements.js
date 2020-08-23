@@ -149,10 +149,12 @@ export class Engagements {
                 $('.engagement-block__header .engagement-block__title', item).text(e.title);
 
                 $('.engagement-block__details', item).html('');
-                self.appendRowToEngagementBlock(item, 'fa fa-info', e.short_desc, false);
-                self.appendRowToEngagementBlock(item, 'fa fa-calendar', e.confirmed_date, false);
+                self.appendRowToEngagementBlock(item, 'fa fa-info', e.short_desc, null, false);
+
+                const dateText = this.getDateText(e);
+                self.appendRowToEngagementBlock(item, 'fa fa-calendar', dateText, null, false);
                 e.actions.forEach((a) => {
-                    self.appendRowToEngagementBlock(item, a.icon, a.description_html, true);
+                    self.appendRowToEngagementBlock(item, a.icon, a.description_html, a.confirmed_date, true);
                 })
 
                 $(wrapper).append(item);
@@ -164,11 +166,25 @@ export class Engagements {
         }
     }
 
-    appendRowToEngagementBlock = (item, iconClass, text, parseAsHtml = false) => {
+    getDateText = (e) => {
+
+
+        return e.end_date;
+    }
+
+    appendRowToEngagementBlock = (item, iconClass, text, rowDate, isActionRow = false) => {
         let row = engagementRowClone.cloneNode(true);
         $('.engagement-block__details_icon div', row).attr('class', iconClass);
-        if (parseAsHtml) {
-            $('.engagement-block__rich-text', row).html(text);
+        if (isActionRow) {
+
+            if (rowDate !== null && rowDate !== '') {
+                let h5 = $('<h5></h5>');
+                $(h5).text(rowDate);
+                $('.engagement-block__rich-text', row).append(h5);
+            }
+            let div = $('<div></div>');
+            $(div).html(text);
+            $('.engagement-block__rich-text', row).append(div);
         } else {
             $('.engagement-block__rich-text', row).text(text);
         }
@@ -210,7 +226,7 @@ export class Engagements {
         //call createCategoryLinkAndContent -> categories = allCategories, engagements = filteredEngagements
         let filterDate = new Date(new Date().getTime() + (filterDayCount * 24 * 60 * 60 * 1000));
         let engagements = allEngagements.filter((e) => {
-            return (new Date(e.confirmed_date) <= filterDate)
+            return (new Date(e.end_date) <= filterDate)
         });
         this.createCategoryLinkAndContent(allCategories, engagements);
     }
