@@ -1,22 +1,25 @@
 import {Load} from "./load";
 
-const hostname = window.location.hostname;
-
-const profiles = {
-    'localhost': {
-        baseUrl: 'http://192.168.1.13:8000/api/v1'
-    },
-};
+let hostname = window.location.hostname;
+let baseUrl = 'https://idp-data.openup.org.za';
 
 const init = () => {
-    let p = profiles[hostname];
-    if (typeof p === 'undefined') {
-        p = profiles['localhost']; //todo: this is temp, change here
+    let url_string = window.location.href;
+    let url = new URL(url_string);
+    let baseUrlParam = url.searchParams.get('api_url');
+    let hostnameParam = url.searchParams.get('hostname');
+
+    if (baseUrlParam !== null && baseUrlParam !== '') {
+        baseUrl = baseUrlParam;
     }
 
-    p.baseUrl = p.baseUrl + '/host/' + hostname;
+    if (hostnameParam !== null && hostnameParam !== '') {
+        hostname = hostnameParam;
+    }
 
-    const load = new Load(p);
+    baseUrl = baseUrl + '/host/' + hostname;
+
+    const load = new Load(baseUrl);
 }
 
 init();

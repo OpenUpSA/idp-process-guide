@@ -167,9 +167,31 @@ export class Engagements {
     }
 
     getDateText = (e) => {
+        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        let result = '';
 
+        const end = new Date(e.end_date);
 
-        return e.end_date;
+        if (e.start_date === null) {
+            //no start date --- "By 25 January"
+            let date_str = 'By ' + end.getDate() + ' ' + monthNames[end.getMonth()];
+            result = date_str;
+        } else {
+            //has start date
+            const start = new Date(e.start_date);
+            let date_str = '';
+
+            if (start.getMonth() === end.getMonth()) {
+                //same month --- "1 - 30 September"
+                date_str = start.getDate() + ' - ' + end.getDate() + ' ' + monthNames[end.getMonth()];
+            } else {
+                //different months --- "1 August - 25 September"
+                date_str = start.getDate() + ' ' + monthNames[start.getMonth()] + ' - ' + end.getDate() + ' ' + monthNames[end.getMonth()];
+            }
+            result = date_str;
+        }
+
+        return result;
     }
 
     appendRowToEngagementBlock = (item, iconClass, text, rowDate, isActionRow = false) => {
