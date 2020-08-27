@@ -2,8 +2,8 @@ let apiUrl = '';
 let muniCode = 'WC033'; //this is temp
 
 export class Geography {
-    constructor(baseUrl) {
-        apiUrl = `${baseUrl}`;
+    constructor(baseUrl, hostname) {
+        apiUrl = `${baseUrl}/municipality?hostname=${hostname}`;
 
         this.getGeographyData();
     }

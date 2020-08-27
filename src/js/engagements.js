@@ -28,8 +28,8 @@ let allEngagements = null;
 let allCategories = null;
 
 export class Engagements {
-    constructor(baseUrl) {
-        apiUrl = `${baseUrl}/events`;
+    constructor(baseUrl, hostname) {
+        apiUrl = `${baseUrl}/events?hostname=${hostname}`;
 
         //tab-link
         this.setDomElements();
