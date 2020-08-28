@@ -1,5 +1,4 @@
 let apiUrl = '';
-let muniCode = 'WC033'; //this is temp
 
 /* category */
 let categoryLinkClone = null;
