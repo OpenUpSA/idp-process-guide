@@ -4,6 +4,7 @@ let calendarStartDate = null;
 let calendarEndDate = null;
 let phaseOpen = false;
 let currentDatePhase = 1;
+let openPhaseId = 0;
 
 export class Marker {
     constructor() {
@@ -48,6 +49,7 @@ export class Marker {
         $('.phase').each(function () {
             let phaseStart = self.convertStringToDate($(this).attr('data-start'));
             let phaseEnd = self.convertStringToDate($(this).attr('data-end'));
+            phaseEnd = self.addDays(phaseEnd, 1);    //take 1 day after so 31st of march is still q3
 
             if (phaseStart < date && date < phaseEnd) {
                 id = self.getPhaseId(this);
@@ -55,6 +57,10 @@ export class Marker {
         });
 
         return id;
+    }
+
+    addDays = (date, dayCount) => {
+        return new Date(date.getTime() + dayCount * 24 * 60 * 60 * 1000);
     }
 
     setMarkerStartPositions = () => {
@@ -65,8 +71,12 @@ export class Marker {
     }
 
     phaseClicked = (phaseObj) => {
-        phaseOpen = true;
         let phaseId = this.getPhaseId(phaseObj);
+        if (phaseOpen && phaseId === openPhaseId) {
+            return;
+        }
+        phaseOpen = true;
+        openPhaseId = phaseId;
 
         setTimeout(() => {
             this.setPhaseMarkerPositions(phaseId, phaseObj);
@@ -168,6 +178,7 @@ export class Marker {
 
     calculateDatePercentage = (date, periodStart = calendarStartDate, periodEnd = calendarEndDate) => {
         let percentage = 0;
+        periodEnd = this.addDays(periodEnd, 1);
         percentage = ((date - periodStart) / (periodEnd - periodStart)) * 100;
 
         return percentage;
