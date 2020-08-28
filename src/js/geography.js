@@ -1,5 +1,4 @@
 let apiUrl = '';
-let muniCode = 'WC033'; //this is temp
 
 export class Geography {
     constructor(baseUrl, hostname) {
