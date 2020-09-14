@@ -1,7 +1,7 @@
 import {Load} from "./load";
 
 let hostname = window.location.hostname;
-let baseUrl = 'http://192.168.1.14:8000/api/v1';
+let baseUrl = 'http://192.168.1.13:8000/api/v1';
 
 const init = () => {
     let url_string = window.location.href;

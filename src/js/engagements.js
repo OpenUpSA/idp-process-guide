@@ -1,5 +1,5 @@
+
 let apiUrl = '';
-let muniCode = 'WC033'; //this is temp
 
 /* category */
 let categoryLinkClone = null;
@@ -106,6 +106,7 @@ export class Engagements {
         $(item).attr('id', 'c-link-' + c.id);
         $(item).removeClass(activeLinkClassName);
         $(item).removeAttr('data-w-tab');
+        $(item).find('.loading').addClass('hidden');
         $(item).on('click', () => this.setActiveCategory(c.id));
 
         $('.tab-link__text', item).text(c.name);
@@ -151,7 +152,7 @@ export class Engagements {
                 $('.engagement-block__details', item).html('');
                 self.appendRowToEngagementBlock(item, 'fa fa-info', e.short_desc, null, false);
 
-                const dateText = this.getDateText(e);
+                const dateText = getDateText(e);
                 self.appendRowToEngagementBlock(item, 'fa fa-calendar', dateText, null, false);
                 e.actions.forEach((a) => {
                     self.appendRowToEngagementBlock(item, a.icon, a.description_html, a.confirmed_date, true);
@@ -164,34 +165,6 @@ export class Engagements {
             let item = emptyCategoryClone.cloneNode(true);
             $(wrapper).append(item);
         }
-    }
-
-    getDateText = (e) => {
-        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        let result = '';
-
-        const end = new Date(e.end_date);
-
-        if (e.start_date === null) {
-            //no start date --- "By 25 January"
-            let date_str = 'By ' + end.getDate() + ' ' + monthNames[end.getMonth()];
-            result = date_str;
-        } else {
-            //has start date
-            const start = new Date(e.start_date);
-            let date_str = '';
-
-            if (start.getMonth() === end.getMonth()) {
-                //same month --- "1 - 30 September"
-                date_str = start.getDate() + ' - ' + end.getDate() + ' ' + monthNames[end.getMonth()];
-            } else {
-                //different months --- "1 August - 25 September"
-                date_str = start.getDate() + ' ' + monthNames[start.getMonth()] + ' - ' + end.getDate() + ' ' + monthNames[end.getMonth()];
-            }
-            result = date_str;
-        }
-
-        return result;
     }
 
     appendRowToEngagementBlock = (item, iconClass, text, rowDate, isActionRow = false) => {
@@ -252,4 +225,40 @@ export class Engagements {
         });
         this.createCategoryLinkAndContent(allCategories, engagements);
     }
+}
+
+export function getDateText(e) {
+    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    let result = '';
+
+    const end = new Date(e.end_date);
+
+    if (e.start_date === null) {
+        //no start date --- "By 25 January 2020"
+        let date_str = 'By ' + end.getDate() + ' ' + monthNames[end.getMonth()] + ' ' + end.getFullYear();
+        result = date_str;
+    } else {
+        //has start date
+        const start = new Date(e.start_date);
+        let date_str = '';
+
+
+        if (start.getFullYear() === end.getFullYear()) {
+            if (start.getMonth() === end.getMonth()) {
+                //same month same year --- "1 - 30 September 2020"
+                date_str = start.getDate() + ' - ' + end.getDate() + ' ' + monthNames[end.getMonth()] + ' ' + end.getFullYear();
+            } else {
+                //different months --- "1 August - 25 September 2020"
+                date_str = start.getDate() + ' ' + monthNames[start.getMonth()] + ' - ' + end.getDate() + ' ' + monthNames[end.getMonth()] + ' ' + end.getFullYear();
+            }
+        } else {
+            //seperate year --- "1 September 2020 - 30 September 2021"
+            date_str = start.getDate() + ' ' + monthNames[start.getMonth()] + ' ' + start.getFullYear() + ' - ' + end.getDate() + ' ' + monthNames[end.getMonth()] + ' ' + end.getFullYear();
+        }
+
+
+        result = date_str;
+    }
+
+    return result;
 }
