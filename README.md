@@ -1,6 +1,6 @@
 # Participation Guide frontend
 
-Javascript + ES6 built with parcel.
+WebFlow Export + ES6 built with parcel.
 
 ## Development environment
 
