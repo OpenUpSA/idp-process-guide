@@ -42,9 +42,9 @@ export class Geography {
         $('.footer-description__wrap .loading').addClass('hidden');
     }
 
-    showFooterLink = (obj, url) => {
-        $(obj).removeClass('hidden');
-        $(obj).closest('a').find('.loading').addClass('hidden');
-        $(obj).closest('a').attr('href', url);
+    showFooterLink = (selector, url) => {
+        $(selector).removeClass('hidden');
+        $(selector).closest('a').find('.loading').addClass('hidden');
+        $(selector).closest('a').attr('href', url);
     }
 }
