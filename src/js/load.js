@@ -3,9 +3,9 @@ import {Engagements} from "./engagements";
 import {Geography} from "./geography";
 
 export class Load {
-    constructor(baseUrl, hostname) {
+    constructor(baseUrl, hostname, analytics) {
         //const marker = new Marker();
-        const engagements = new Engagements(baseUrl, hostname);
+        const engagements = new Engagements(baseUrl, hostname, analytics);
         const geography = new Geography(baseUrl, hostname);
     }
 }

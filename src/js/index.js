@@ -1,7 +1,8 @@
 import {Load} from "./load";
+import Analytics from "./analytics";
 
 let hostname = window.location.hostname;
-let baseUrl = 'https://idp-data.openup.org.za/api/v1';
+let baseUrl = 'http://192.168.1.15:8000/api/v1';
 
 const init = () => {
     let url_string = window.location.href;
@@ -17,7 +18,8 @@ const init = () => {
         hostname = hostnameParam;
     }
 
-    const load = new Load(baseUrl, hostname);
+    const analytics = new Analytics();
+    const load = new Load(baseUrl, hostname, analytics);
 }
 
 init();

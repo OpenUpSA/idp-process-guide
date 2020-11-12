@@ -1,4 +1,3 @@
-
 let apiUrl = '';
 
 /* category */
@@ -28,13 +27,15 @@ let allEngagements = null;
 let allCategories = null;
 
 export class Engagements {
-    constructor(baseUrl, hostname) {
+    constructor(baseUrl, hostname, analytics) {
         apiUrl = `${baseUrl}/events?hostname=${hostname}`;
+        this.analytics = analytics;
 
         //tab-link
         this.setDomElements();
         this.getEngagements();
         this.setFiltering();
+        this.detectExternalLinkClick();
     }
 
     setDomElements = () => {
@@ -53,6 +54,16 @@ export class Engagements {
         $(categoryContentWrapper).empty();
     }
 
+    detectExternalLinkClick = () => {
+        let self = this;
+        $(document).on('click', 'a', function (event) {
+            if (!this.href.match(/^mailto\:/) && this.href !== '' && (this.hostname != location.hostname)) {
+                //external click
+                self.analytics.logEvent('external_link_clicked', this.href);
+            }
+        });
+    }
+
     getEngagements = () => {
         fetch(apiUrl)
             .then(data => data.json())
@@ -65,7 +76,7 @@ export class Engagements {
     showCategories = (engagements) => {
         let categories = this.getCategoriesFromEngagements(engagements);
         allCategories = categories;
-        this.filterEngagements(90);
+        this.filterEngagements(90, false);
     }
 
     getCategoriesFromEngagements = (engagements) => {
@@ -98,7 +109,7 @@ export class Engagements {
             self.createCategoryLink(c);
             self.createCategoryContent(c, engagements);
         })
-        this.setActiveCategory(0);  //all
+        this.setActiveCategory(0, false);  //all
     }
 
     createCategoryLink = (c) => {
@@ -107,7 +118,7 @@ export class Engagements {
         $(item).removeClass(activeLinkClassName);
         $(item).removeAttr('data-w-tab');
         $(item).find('.loading').addClass('hidden');
-        $(item).on('click', () => this.setActiveCategory(c.id));
+        $(item).on('click', () => this.setActiveCategory(c.id, true));
 
         $('.tab-link__text', item).text(c.name);
         $('.tab-link__icon div', item).attr('class', c.icon);
@@ -186,7 +197,9 @@ export class Engagements {
         $('.engagement-block__details', item).append(row);
     }
 
-    setActiveCategory = (id) => {
+    setActiveCategory = (id, logEvent) => {
+        let categoryText = '';
+
         $(categoryContentClass).each(function () {
             $(this).addClass('hidden');
             if ($(this).attr('id') === 'c-tab-' + id) {
@@ -197,9 +210,14 @@ export class Engagements {
         $(categoryLinkClass).each(function () {
             $(this).removeClass(activeLinkClassName);
             if ($(this).attr('id') === 'c-link-' + id) {
+                categoryText = $(this).find('.tab-link__text').text();
                 $(this).addClass(activeLinkClassName);
             }
         });
+
+        if (logEvent) {
+            this.analytics.logEvent('category_selected', categoryText)
+        }
     }
 
     setFiltering = () => {
@@ -211,12 +229,19 @@ export class Engagements {
                 $('.events-range__list').removeClass('w--open');
                 $('.events-range__selector').attr('aria-expanded', false);
                 let filterDays = $(this).attr('data-filterDays');
-                self.filterEngagements(filterDays);
+                self.filterEngagements(filterDays, true);
             })
         });
     }
 
-    filterEngagements = (filterDayCount) => {
+    /**
+     * logEvent : prevent logging the default selection
+     * */
+    filterEngagements = (filterDayCount, logEvent) => {
+        if (logEvent) {
+            this.analytics.logEvent('time_period_selected', filterDayCount);
+        }
+
         //filter engagements from allEngagements
         //call createCategoryLinkAndContent -> categories = allCategories, engagements = filteredEngagements
         let filterDate = new Date(new Date().getTime() + (filterDayCount * 24 * 60 * 60 * 1000));
