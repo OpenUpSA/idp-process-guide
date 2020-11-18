@@ -2,7 +2,7 @@ import {Load} from "./load";
 import Analytics from "./analytics";
 
 let hostname = window.location.hostname;
-let baseUrl = 'http://192.168.1.15:8000/api/v1';
+let baseUrl = `${process.env.BASE_URL}`;
 
 const init = () => {
     let url_string = window.location.href;
