@@ -36,7 +36,7 @@ export class Geography {
         //todo:this shouldnt be here - emre
         this.showFooterLink('.footer__muni-site', data.homepage_url);
         this.showFooterLink('.footer__muni-bylaws', data.by_laws_url);
-        this.showFooterLink('.footer__ward-councillor');
+        this.showFooterLink('.footer__ward-councillor', data.ward_councillor_url);
 
         $('.footer-description__wrap .footer__description').removeClass('hidden');
         $('.footer-description__wrap .loading').addClass('hidden');
