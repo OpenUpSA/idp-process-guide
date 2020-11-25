@@ -9,6 +9,17 @@ yarn install
 yarn start
 ```
 
+## Import Webflow Export
+
+Install:
+`npm install --global import-webflow-export`
+
+Run:
+`import-webflow webflow-export.zip`
+
+More info here:
+https://github.com/OpenUpSA/import-webflow-export
+
 ### Custom frontend hostnme
 
 The frontend passes its hostname to the backend to supply relevant by default.
