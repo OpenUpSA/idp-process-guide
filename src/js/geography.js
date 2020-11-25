@@ -11,9 +11,16 @@ export class Geography {
         fetch(apiUrl)
             .then(data => data.json())
             .then(data => {
+                this.setHeadContent(data);
                 this.setBodyContent(data);
                 this.setFooterContent(data);
             })
+    }
+
+    setHeadContent = (data) => {
+        if (data.page_title) {
+            $('title').html(data.page_title)
+        }
     }
 
     setBodyContent = (data) => {
