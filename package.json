@@ -33,5 +33,14 @@
     "clean-files": "cp dist/js*.js dist/idp.js; cp dist/js*.js.map dist/idp.js.map; cp dist/idp-guide*.css dist/idp.css",
     "test": "jest"
   },
-  "browserslist": "> 0.25%, not dead"
+  "browserslist": "> 0.25%, not dead",
+  "importWebflowExport": {
+    "importHtml": [
+      {
+        "glob": "*.html",
+        "destDir": "src",
+        "transforms": "./src/js/webflow/import.js"
+      }
+    ]
+  }
 }

@@ -5222,10 +5222,11 @@ function equalArrays(array, other, bitmask, customizer, equalFunc, stack) {
   if (arrLength != othLength && !(isPartial && othLength > arrLength)) {
     return false;
   }
-  // Assume cyclic values are equal.
-  var stacked = stack.get(array);
-  if (stacked && stack.get(other)) {
-    return stacked == other;
+  // Check that cyclic values are equal.
+  var arrStacked = stack.get(array);
+  var othStacked = stack.get(other);
+  if (arrStacked && othStacked) {
+    return arrStacked == other && othStacked == array;
   }
   var index = -1,
       result = true,
@@ -7295,17 +7296,21 @@ var _shallowEqual = _interopRequireDefault(__webpack_require__(144));
 
 var _constants = __webpack_require__(6);
 
-var _utils = __webpack_require__(357);
-
 var _shared = __webpack_require__(29);
 
 var _IX2EngineActions = __webpack_require__(87);
 
-var elementApi = _interopRequireWildcard(__webpack_require__(359));
+var elementApi = _interopRequireWildcard(__webpack_require__(357));
 
-var _IX2VanillaEvents = _interopRequireDefault(__webpack_require__(360));
+var _IX2VanillaEvents = _interopRequireDefault(__webpack_require__(358));
 /* eslint-env browser */
 
+
+var QuickEffectsIdList = Object.keys(_constants.QuickEffectIds);
+
+var isQuickEffect = function isQuickEffect(actionTypeId) {
+  return QuickEffectsIdList.includes(actionTypeId);
+};
 
 var _constants$IX2EngineC = _constants.IX2EngineConstants,
     COLON_DELIMITER = _constants$IX2EngineC.COLON_DELIMITER,
@@ -7462,7 +7467,7 @@ function handlePlaybackRequest(playback, store) {
     testManual: testManual
   });
 
-  if (actionListId && actionTypeId === _constants.ActionTypeConsts.GENERAL_START_ACTION || (0, _utils.isQuickEffect)(actionTypeId)) {
+  if (actionListId && actionTypeId === _constants.ActionTypeConsts.GENERAL_START_ACTION || isQuickEffect(actionTypeId)) {
     stopActionGroup({
       store: store,
       actionListId: actionListId
@@ -7788,20 +7793,35 @@ var forEachEventTarget = function forEachEventTarget(eventTargets, eventCallback
   });
 };
 
-var getAffectedForEvent = function getAffectedForEvent(event) {
-  var config = {
-    target: event.target
-  };
-  return getAffectedElements({
-    config: config,
-    elementApi: elementApi
-  });
+var getAffectedForEvent = function getAffectedForEvent(_ref13) {
+  var singleTarget = _ref13.target,
+      targets = _ref13.targets;
+
+  if (targets && targets.length) {
+    return targets.reduce(function (acc, target) {
+      var config = {
+        target: target
+      };
+      return acc.concat(getAffectedElements({
+        config: config,
+        elementApi: elementApi
+      }));
+    }, []);
+  } else {
+    var config = {
+      target: singleTarget
+    };
+    return getAffectedElements({
+      config: config,
+      elementApi: elementApi
+    });
+  }
 };
 
-function bindEventType(_ref13) {
-  var logic = _ref13.logic,
-      store = _ref13.store,
-      events = _ref13.events;
+function bindEventType(_ref14) {
+  var logic = _ref14.logic,
+      store = _ref14.store,
+      events = _ref14.events;
   injectBehaviorCSSFixes(events);
   var eventTypes = logic.types,
       eventHandler = logic.handler;
@@ -7833,8 +7853,8 @@ function bindEventType(_ref13) {
       configs.forEach(function (eventConfig) {
         var continuousParameterGroupId = eventConfig.continuousParameterGroupId;
         var paramGroups = (0, _get["default"])(actionLists, "".concat(actionListId, ".continuousParameterGroups"), []);
-        var parameterGroup = (0, _find["default"])(paramGroups, function (_ref14) {
-          var id = _ref14.id;
+        var parameterGroup = (0, _find["default"])(paramGroups, function (_ref15) {
+          var id = _ref15.id;
           return id === continuousParameterGroupId;
         });
         var smoothing = (eventConfig.smoothing || 0) / 100;
@@ -7861,7 +7881,7 @@ function bindEventType(_ref13) {
       });
     }
 
-    if (eventAction.actionTypeId === _constants.ActionTypeConsts.GENERAL_START_ACTION || (0, _utils.isQuickEffect)(eventAction.actionTypeId)) {
+    if (eventAction.actionTypeId === _constants.ActionTypeConsts.GENERAL_START_ACTION || isQuickEffect(eventAction.actionTypeId)) {
       renderInitialGroup({
         store: store,
         actionListId: actionListId,
@@ -7912,11 +7932,11 @@ function bindEventType(_ref13) {
 
   var handleEventThrottled = (0, _throttle["default"])(handleEvent, THROTTLED_EVENT_WAIT);
 
-  var addListeners = function addListeners(_ref15) {
-    var _ref15$target = _ref15.target,
-        target = _ref15$target === void 0 ? document : _ref15$target,
-        types = _ref15.types,
-        shouldThrottle = _ref15.throttle;
+  var addListeners = function addListeners(_ref16) {
+    var _ref16$target = _ref16.target,
+        target = _ref16$target === void 0 ? document : _ref16$target,
+        types = _ref16.types,
+        shouldThrottle = _ref16.throttle;
     types.split(' ').filter(Boolean).forEach(function (type) {
       var handlerFunc = shouldThrottle ? handleEventThrottled : handleEvent; // $FlowFixMe
 
@@ -7972,10 +7992,10 @@ function injectBehaviorCSSFixes(events) {
   }
 }
 
-function renderInitialGroup(_ref16) {
-  var store = _ref16.store,
-      actionListId = _ref16.actionListId,
-      eventId = _ref16.eventId;
+function renderInitialGroup(_ref17) {
+  var store = _ref17.store,
+      actionListId = _ref17.actionListId,
+      eventId = _ref17.eventId;
 
   var _store$getState10 = store.getState(),
       ixData = _store$getState10.ixData,
@@ -8028,8 +8048,8 @@ function renderInitialGroup(_ref16) {
 } // $FlowFixMe
 
 
-function stopAllActionGroups(_ref17) {
-  var store = _ref17.store;
+function stopAllActionGroups(_ref18) {
+  var store = _ref18.store;
 
   var _store$getState11 = store.getState(),
       ixInstances = _store$getState11.ixInstances;
@@ -8051,12 +8071,12 @@ function stopAllActionGroups(_ref17) {
 } // $FlowFixMe
 
 
-function stopActionGroup(_ref18) {
-  var store = _ref18.store,
-      eventId = _ref18.eventId,
-      eventTarget = _ref18.eventTarget,
-      eventStateKey = _ref18.eventStateKey,
-      actionListId = _ref18.actionListId;
+function stopActionGroup(_ref19) {
+  var store = _ref19.store,
+      eventId = _ref19.eventId,
+      eventTarget = _ref19.eventTarget,
+      eventStateKey = _ref19.eventStateKey,
+      actionListId = _ref19.actionListId;
 
   var _store$getState12 = store.getState(),
       ixInstances = _store$getState12.ixInstances,
@@ -8088,16 +8108,16 @@ function stopActionGroup(_ref18) {
 } // $FlowFixMe
 
 
-function startActionGroup(_ref19) {
-  var store = _ref19.store,
-      eventId = _ref19.eventId,
-      eventTarget = _ref19.eventTarget,
-      eventStateKey = _ref19.eventStateKey,
-      actionListId = _ref19.actionListId,
-      _ref19$groupIndex = _ref19.groupIndex,
-      groupIndex = _ref19$groupIndex === void 0 ? 0 : _ref19$groupIndex,
-      immediate = _ref19.immediate,
-      verbose = _ref19.verbose;
+function startActionGroup(_ref20) {
+  var store = _ref20.store,
+      eventId = _ref20.eventId,
+      eventTarget = _ref20.eventTarget,
+      eventStateKey = _ref20.eventStateKey,
+      actionListId = _ref20.actionListId,
+      _ref20$groupIndex = _ref20.groupIndex,
+      groupIndex = _ref20$groupIndex === void 0 ? 0 : _ref20$groupIndex,
+      immediate = _ref20.immediate,
+      verbose = _ref20.verbose;
 
   var _event$action;
 
@@ -8129,7 +8149,7 @@ function startActionGroup(_ref19) {
 
 
   var isFirstGroup = groupIndex === 0 || groupIndex === 1 && useFirstGroupAsInitialState;
-  var instanceDelay = isFirstGroup && (0, _utils.isQuickEffect)((_event$action = event.action) === null || _event$action === void 0 ? void 0 : _event$action.actionTypeId) ? event.config.delay : undefined; // Abort playback if no action items exist at group index
+  var instanceDelay = isFirstGroup && isQuickEffect((_event$action = event.action) === null || _event$action === void 0 ? void 0 : _event$action.actionTypeId) ? event.config.delay : undefined; // Abort playback if no action items exist at group index
 
   var actionItems = (0, _get["default"])(actionItemGroups, [groupIndex, 'actionItems'], []);
 
@@ -8224,8 +8244,8 @@ function createInstance(options) {
 
   var elementId = getElementId(ixElements, element);
 
-  var _ref20 = ixElements[elementId] || {},
-      refState = _ref20.refState;
+  var _ref21 = ixElements[elementId] || {},
+      refState = _ref21.refState;
 
   var refType = elementApi.getRefType(element);
   var origin = getInstanceOrigin(element, refState, computedStyle, actionItem, elementApi, // $FlowFixMe
@@ -8245,8 +8265,8 @@ function createInstance(options) {
 
   observeStore({
     store: store,
-    select: function select(_ref21) {
-      var ixInstances = _ref21.ixInstances;
+    select: function select(_ref22) {
+      var ixInstances = _ref22.ixInstances;
       return ixInstances[instanceId];
     },
     onChange: handleInstanceChange
@@ -8268,9 +8288,9 @@ function removeInstance(instance, store) {
   var _store$getState15 = store.getState(),
       ixElements = _store$getState15.ixElements;
 
-  var _ref22 = ixElements[elementId] || {},
-      ref = _ref22.ref,
-      refType = _ref22.refType;
+  var _ref23 = ixElements[elementId] || {},
+      ref = _ref23.ref,
+      refType = _ref23.refType;
 
   if (refType === HTML_ELEMENT) {
     cleanupHTMLElement(ref, actionItem, elementApi);
@@ -8339,10 +8359,10 @@ function handleInstanceChange(instance, store) {
       var _store$getState19 = store.getState(),
           ixElements = _store$getState19.ixElements;
 
-      var _ref23 = ixElements[elementId] || {},
-          ref = _ref23.ref,
-          refType = _ref23.refType,
-          refState = _ref23.refState;
+      var _ref24 = ixElements[elementId] || {},
+          ref = _ref24.ref,
+          refType = _ref24.refType,
+          refState = _ref24.refState;
 
       var actionState = refState && refState[actionTypeId]; // Choose render based on ref type
 
@@ -8468,8 +8488,8 @@ module.exports = baseCreate;
 /* 149 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var metaMap = __webpack_require__(373),
-    noop = __webpack_require__(374);
+var metaMap = __webpack_require__(371),
+    noop = __webpack_require__(372);
 
 /**
  * Gets metadata for `func`.
@@ -8489,7 +8509,7 @@ module.exports = getData;
 /* 150 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var realNames = __webpack_require__(375);
+var realNames = __webpack_require__(373);
 
 /** Used for built-in method references. */
 var objectProto = Object.prototype;
@@ -8530,12 +8550,12 @@ __webpack_require__(152);
 __webpack_require__(284);
 __webpack_require__(83);
 __webpack_require__(286);
+__webpack_require__(380);
+__webpack_require__(381);
 __webpack_require__(382);
 __webpack_require__(383);
 __webpack_require__(384);
-__webpack_require__(385);
-__webpack_require__(386);
-module.exports = __webpack_require__(391);
+module.exports = __webpack_require__(389);
 
 
 /***/ }),
@@ -10795,10 +10815,11 @@ function equalObjects(object, other, bitmask, customizer, equalFunc, stack) {
       return false;
     }
   }
-  // Assume cyclic values are equal.
-  var stacked = stack.get(object);
-  if (stacked && stack.get(other)) {
-    return stacked == other;
+  // Check that cyclic values are equal.
+  var objStacked = stack.get(object);
+  var othStacked = stack.get(other);
+  if (objStacked && othStacked) {
+    return objStacked == other && othStacked == object;
   }
   var result = true;
   stack.set(object, other);
@@ -31582,6 +31603,10 @@ function baseSet(object, path, value, customizer) {
     var key = toKey(path[index]),
         newValue = value;
 
+    if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+      return object;
+    }
+
     if (index != lastIndex) {
       var objValue = nested[key];
       newValue = customizer ? customizer(objValue, key, nested) : undefined;
@@ -32338,51 +32363,6 @@ module.exports = now;
 "use strict";
 
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _quickEffects = __webpack_require__(358);
-
-Object.keys(_quickEffects).forEach(function (key) {
-  if (key === "default" || key === "__esModule") return;
-  Object.defineProperty(exports, key, {
-    enumerable: true,
-    get: function get() {
-      return _quickEffects[key];
-    }
-  });
-});
-
-/***/ }),
-/* 358 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.isQuickEffect = void 0;
-
-var _constants = __webpack_require__(6);
-
-var QuickEffectsIdList = Object.keys(_constants.QuickEffectIds);
-
-var isQuickEffect = function isQuickEffect(actionTypeId) {
-  return QuickEffectsIdList.includes(actionTypeId);
-};
-
-exports.isQuickEffect = isQuickEffect;
-
-/***/ }),
-/* 359 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
 var _interopRequireDefault = __webpack_require__(1);
 
 var _typeof2 = _interopRequireDefault(__webpack_require__(41));
@@ -32572,7 +32552,7 @@ function getRefType(ref) {
 }
 
 /***/ }),
-/* 360 */
+/* 358 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32595,11 +32575,11 @@ exports["default"] = void 0;
 
 var _extends2 = _interopRequireDefault(__webpack_require__(30));
 
-var _flow = _interopRequireDefault(__webpack_require__(361));
+var _flow = _interopRequireDefault(__webpack_require__(359));
 
 var _get = _interopRequireDefault(__webpack_require__(49));
 
-var _clamp = _interopRequireDefault(__webpack_require__(380));
+var _clamp = _interopRequireDefault(__webpack_require__(378));
 
 var _constants = __webpack_require__(6);
 
@@ -33283,10 +33263,10 @@ var _default = (_default2 = {}, (0, _defineProperty2["default"])(_default2, SLID
 exports["default"] = _default;
 
 /***/ }),
-/* 361 */
+/* 359 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var createFlow = __webpack_require__(362);
+var createFlow = __webpack_require__(360);
 
 /**
  * Creates a function that returns the result of invoking the given functions
@@ -33316,15 +33296,15 @@ module.exports = flow;
 
 
 /***/ }),
-/* 362 */
+/* 360 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var LodashWrapper = __webpack_require__(88),
-    flatRest = __webpack_require__(363),
+    flatRest = __webpack_require__(361),
     getData = __webpack_require__(149),
     getFuncName = __webpack_require__(150),
     isArray = __webpack_require__(2),
-    isLaziable = __webpack_require__(376);
+    isLaziable = __webpack_require__(374);
 
 /** Error message constants. */
 var FUNC_ERROR_TEXT = 'Expected a function';
@@ -33400,12 +33380,12 @@ module.exports = createFlow;
 
 
 /***/ }),
-/* 363 */
+/* 361 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var flatten = __webpack_require__(364),
-    overRest = __webpack_require__(367),
-    setToString = __webpack_require__(369);
+var flatten = __webpack_require__(362),
+    overRest = __webpack_require__(365),
+    setToString = __webpack_require__(367);
 
 /**
  * A specialized version of `baseRest` which flattens the rest array.
@@ -33422,10 +33402,10 @@ module.exports = flatRest;
 
 
 /***/ }),
-/* 364 */
+/* 362 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseFlatten = __webpack_require__(365);
+var baseFlatten = __webpack_require__(363);
 
 /**
  * Flattens `array` a single level deep.
@@ -33450,11 +33430,11 @@ module.exports = flatten;
 
 
 /***/ }),
-/* 365 */
+/* 363 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var arrayPush = __webpack_require__(60),
-    isFlattenable = __webpack_require__(366);
+    isFlattenable = __webpack_require__(364);
 
 /**
  * The base implementation of `_.flatten` with support for restricting flattening.
@@ -33494,7 +33474,7 @@ module.exports = baseFlatten;
 
 
 /***/ }),
-/* 366 */
+/* 364 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Symbol = __webpack_require__(32),
@@ -33520,10 +33500,10 @@ module.exports = isFlattenable;
 
 
 /***/ }),
-/* 367 */
+/* 365 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var apply = __webpack_require__(368);
+var apply = __webpack_require__(366);
 
 /* Built-in method references for those with the same name as other `lodash` methods. */
 var nativeMax = Math.max;
@@ -33562,7 +33542,7 @@ module.exports = overRest;
 
 
 /***/ }),
-/* 368 */
+/* 366 */
 /***/ (function(module, exports) {
 
 /**
@@ -33589,11 +33569,11 @@ module.exports = apply;
 
 
 /***/ }),
-/* 369 */
+/* 367 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseSetToString = __webpack_require__(370),
-    shortOut = __webpack_require__(372);
+var baseSetToString = __webpack_require__(368),
+    shortOut = __webpack_require__(370);
 
 /**
  * Sets the `toString` method of `func` to return `string`.
@@ -33609,10 +33589,10 @@ module.exports = setToString;
 
 
 /***/ }),
-/* 370 */
+/* 368 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var constant = __webpack_require__(371),
+var constant = __webpack_require__(369),
     defineProperty = __webpack_require__(147),
     identity = __webpack_require__(70);
 
@@ -33637,7 +33617,7 @@ module.exports = baseSetToString;
 
 
 /***/ }),
-/* 371 */
+/* 369 */
 /***/ (function(module, exports) {
 
 /**
@@ -33669,7 +33649,7 @@ module.exports = constant;
 
 
 /***/ }),
-/* 372 */
+/* 370 */
 /***/ (function(module, exports) {
 
 /** Used to detect hot functions by number of calls within a span of milliseconds. */
@@ -33712,7 +33692,7 @@ module.exports = shortOut;
 
 
 /***/ }),
-/* 373 */
+/* 371 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var WeakMap = __webpack_require__(106);
@@ -33724,7 +33704,7 @@ module.exports = metaMap;
 
 
 /***/ }),
-/* 374 */
+/* 372 */
 /***/ (function(module, exports) {
 
 /**
@@ -33747,7 +33727,7 @@ module.exports = noop;
 
 
 /***/ }),
-/* 375 */
+/* 373 */
 /***/ (function(module, exports) {
 
 /** Used to lookup unminified function names. */
@@ -33757,13 +33737,13 @@ module.exports = realNames;
 
 
 /***/ }),
-/* 376 */
+/* 374 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var LazyWrapper = __webpack_require__(90),
     getData = __webpack_require__(149),
     getFuncName = __webpack_require__(150),
-    lodash = __webpack_require__(377);
+    lodash = __webpack_require__(375);
 
 /**
  * Checks if `func` has a lazy counterpart.
@@ -33791,7 +33771,7 @@ module.exports = isLaziable;
 
 
 /***/ }),
-/* 377 */
+/* 375 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var LazyWrapper = __webpack_require__(90),
@@ -33799,7 +33779,7 @@ var LazyWrapper = __webpack_require__(90),
     baseLodash = __webpack_require__(89),
     isArray = __webpack_require__(2),
     isObjectLike = __webpack_require__(20),
-    wrapperClone = __webpack_require__(378);
+    wrapperClone = __webpack_require__(376);
 
 /** Used for built-in method references. */
 var objectProto = Object.prototype;
@@ -33944,12 +33924,12 @@ module.exports = lodash;
 
 
 /***/ }),
-/* 378 */
+/* 376 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var LazyWrapper = __webpack_require__(90),
     LodashWrapper = __webpack_require__(88),
-    copyArray = __webpack_require__(379);
+    copyArray = __webpack_require__(377);
 
 /**
  * Creates a clone of `wrapper`.
@@ -33973,7 +33953,7 @@ module.exports = wrapperClone;
 
 
 /***/ }),
-/* 379 */
+/* 377 */
 /***/ (function(module, exports) {
 
 /**
@@ -33999,10 +33979,10 @@ module.exports = copyArray;
 
 
 /***/ }),
-/* 380 */
+/* 378 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseClamp = __webpack_require__(381),
+var baseClamp = __webpack_require__(379),
     toNumber = __webpack_require__(71);
 
 /**
@@ -34044,7 +34024,7 @@ module.exports = clamp;
 
 
 /***/ }),
-/* 381 */
+/* 379 */
 /***/ (function(module, exports) {
 
 /**
@@ -34072,7 +34052,7 @@ module.exports = baseClamp;
 
 
 /***/ }),
-/* 382 */
+/* 380 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34202,7 +34182,7 @@ Webflow.define('links', module.exports = function ($, _) {
 });
 
 /***/ }),
-/* 383 */
+/* 381 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34410,7 +34390,7 @@ Webflow.define('scroll', module.exports = function ($) {
 });
 
 /***/ }),
-/* 384 */
+/* 382 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34551,7 +34531,7 @@ Webflow.define('touch', module.exports = function ($) {
 });
 
 /***/ }),
-/* 385 */
+/* 383 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34581,6 +34561,20 @@ var KEY_CODES = {
   END: 35
 };
 var FORCE_CLOSE = true;
+/**
+ * This pattern matches links that begin with a `#` AND have some alphanumeric
+ * characters after it, including also hyphens and underscores
+ *
+ * Matches:
+ * #foo
+ * #999
+ * #foo-bar_baz
+ *
+ * Does not match:
+ * #
+ */
+
+var INTERNAL_PAGE_LINK_HASHES_PATTERN = /^#[a-zA-Z0-9\-_]+$/;
 Webflow.define('dropdown', module.exports = function ($, _) {
   var debounce = _.debounce;
   var api = {};
@@ -34685,14 +34679,18 @@ Webflow.define('dropdown', module.exports = function ($, _) {
 
     data.list.attr('id', listId);
     data.list.attr('aria-labelledby', toggleId);
-    /**
-     * In macOS Safari, links don't take focus on click unless they have
-     * a tabindex. Without this, the dropdown will break.
-     * @see https://gist.github.com/cvrebert/68659d0333a578d75372
-     */
-
     data.links.each(function (idx, link) {
-      if (!link.hasAttribute('tabindex')) link.setAttribute('tabindex', '0');
+      /**
+       * In macOS Safari, links don't take focus on click unless they have
+       * a tabindex. Without this, the dropdown will break.
+       * @see https://gist.github.com/cvrebert/68659d0333a578d75372
+       */
+      if (!link.hasAttribute('tabindex')) link.setAttribute('tabindex', '0'); // We want to close the drop down if the href links somewhere internally
+      // to the page
+
+      if (INTERNAL_PAGE_LINK_HASHES_PATTERN.test(link.hash)) {
+        link.addEventListener('click', close.bind(null, data));
+      }
     }); // Remove old events
 
     data.el.off(namespace);
@@ -34721,7 +34719,7 @@ Webflow.define('dropdown', module.exports = function ($, _) {
 
       data.el.on(closeEvent, initialToggler);
       data.el.on(keydownEvent, makeDropdownKeydownHandler(data));
-      data.el.on(focusOutEvent, makeDropdownFousoutHandler(data));
+      data.el.on(focusOutEvent, makeDropdownFocusOutHandler(data));
       data.toggle.on(mouseUpEvent, initialToggler);
       data.toggle.on(keydownEvent, makeToggleKeydownHandler(data));
       data.nav = data.el.closest('.w-nav');
@@ -35032,7 +35030,7 @@ Webflow.define('dropdown', module.exports = function ($, _) {
     };
   }
 
-  function makeDropdownFousoutHandler(data) {
+  function makeDropdownFocusOutHandler(data) {
     return debounce(function (evt) {
       var relatedTarget = evt.relatedTarget,
           target = evt.target;
@@ -35058,7 +35056,7 @@ Webflow.define('dropdown', module.exports = function ($, _) {
 });
 
 /***/ }),
-/* 386 */
+/* 384 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35080,7 +35078,7 @@ Webflow.define('dropdown', module.exports = function ($, _) {
 
 var _interopRequireDefault = __webpack_require__(1);
 
-var _slicedToArray2 = _interopRequireDefault(__webpack_require__(387));
+var _slicedToArray2 = _interopRequireDefault(__webpack_require__(385));
 
 var Webflow = __webpack_require__(11);
 
@@ -35584,14 +35582,14 @@ Webflow.define('forms', module.exports = function ($, _) {
 });
 
 /***/ }),
-/* 387 */
+/* 385 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var arrayWithHoles = __webpack_require__(388);
+var arrayWithHoles = __webpack_require__(386);
 
-var iterableToArrayLimit = __webpack_require__(389);
+var iterableToArrayLimit = __webpack_require__(387);
 
-var nonIterableRest = __webpack_require__(390);
+var nonIterableRest = __webpack_require__(388);
 
 function _slicedToArray(arr, i) {
   return arrayWithHoles(arr) || iterableToArrayLimit(arr, i) || nonIterableRest();
@@ -35600,7 +35598,7 @@ function _slicedToArray(arr, i) {
 module.exports = _slicedToArray;
 
 /***/ }),
-/* 388 */
+/* 386 */
 /***/ (function(module, exports) {
 
 function _arrayWithHoles(arr) {
@@ -35610,7 +35608,7 @@ function _arrayWithHoles(arr) {
 module.exports = _arrayWithHoles;
 
 /***/ }),
-/* 389 */
+/* 387 */
 /***/ (function(module, exports) {
 
 function _iterableToArrayLimit(arr, i) {
@@ -35642,7 +35640,7 @@ function _iterableToArrayLimit(arr, i) {
 module.exports = _iterableToArrayLimit;
 
 /***/ }),
-/* 390 */
+/* 388 */
 /***/ (function(module, exports) {
 
 function _nonIterableRest() {
@@ -35652,7 +35650,7 @@ function _nonIterableRest() {
 module.exports = _nonIterableRest;
 
 /***/ }),
-/* 391 */
+/* 389 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
