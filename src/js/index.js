@@ -1,5 +1,6 @@
 import {Load} from "./load";
 import Analytics from "./analytics";
+import Feedback from "./feedback";
 
 let hostname = window.location.hostname;
 let baseUrl = `${process.env.BASE_URL}`;
@@ -19,6 +20,7 @@ const init = () => {
     }
 
     const analytics = new Analytics();
+    const feedback = new Feedback();
     const load = new Load(baseUrl, hostname, analytics);
 }
 
