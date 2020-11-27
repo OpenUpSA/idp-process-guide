@@ -7,8 +7,7 @@ export default class Analytics {
 
     addTagManager = () => {
         const GOOGLE_TAG_MANAGER_ID = `${process.env.GOOGLE_TAG_MANAGER_ID}`;
-
-        if (`${process.env.CONTEXT}` === "production" && GOOGLE_TAG_MANAGER_ID) {
+        if (`${process.env.CONTEXT}` === "production" && GOOGLE_TAG_MANAGER_ID !== "undefined") {
             (function (w, d, s, l, i) {
                 w[l] = w[l] || [];
                 w[l].push({"gtm.start": new Date().getTime(), event: "gtm.js"});
