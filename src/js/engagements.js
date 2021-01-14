@@ -287,5 +287,6 @@ export class Engagements {
       return new Date(e.end_date) <= filterDate;
     });
     this.createCategoryLinkAndContent(allCategories, engagements);
+    pymChild.sendHeight()
   };
 }
