@@ -1,5 +1,5 @@
 import {expect, test} from "@jest/globals";
-import {getDateText} from "../src/js/engagements";
+import {getDateText} from "../src/js/utils";
 
 const obj1 = {
     start_date: null,
