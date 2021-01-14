@@ -252,6 +252,7 @@ export class Engagements {
     if (logEvent) {
       this.analytics.logEvent("category_selected", categoryText);
     }
+    pymChild.sendHeight();
   };
 
   setFiltering = () => {
@@ -287,6 +288,6 @@ export class Engagements {
       return new Date(e.end_date) <= filterDate;
     });
     this.createCategoryLinkAndContent(allCategories, engagements);
-    pymChild.sendHeight()
+    pymChild.sendHeight();
   };
 }
