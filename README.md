@@ -33,8 +33,8 @@ e.g. visit http://localhost:1234/?hostname=somemunicipality.gov.za
 The frontend connects to the production backend by default.
 In development you might want to connect to an alternative backend.
 
-Provide a custom backend URL using the querystring variable `api_url`
-e.g. visit http://localhost:1234/?api_url=http://localhost:8000/api/v1
+Provide a custom backend URL using `promptapi` in the querystring
+e.g. visit http://localhost:1234/?promptapi
 
 
 ## Production deployment
