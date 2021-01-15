@@ -77,3 +77,14 @@ export function getDateText(e) {
 
   return result;
 }
+
+export const getSessionBaseUrl = () => {
+  if (window.location.search.includes("promptapi")) {
+    sessionStorage.apiBaseUrl =
+      window.prompt(
+        "Enter the API base URL",
+        sessionStorage.apiBaseUrl || ""
+      ) || "";
+  }
+  return sessionStorage.apiBaseUrl;
+};
