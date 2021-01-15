@@ -3,7 +3,7 @@ import {getDateText} from "../src/js/utils";
 
 const obj1 = {
     start_date: null,
-    end_date: '2020-08-26'
+    end_date: '2020-08-27'
 }
 
 const obj2 = {
