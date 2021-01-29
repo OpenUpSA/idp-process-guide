@@ -1,13 +1,15 @@
 require('dotenv').config();
+const GOOGLE_TAG_MANAGER_ID = `${process.env.GOOGLE_TAG_MANAGER_ID}`;
+const CONTEXT = `${process.env.CONTEXT}`;
 
 export default class Analytics {
+
     constructor() {
         this.addTagManager()
     }
 
     addTagManager = () => {
-        const GOOGLE_TAG_MANAGER_ID = `${process.env.GOOGLE_TAG_MANAGER_ID}`;
-        if (`${process.env.CONTEXT}` === "production" && GOOGLE_TAG_MANAGER_ID !== "undefined") {
+        if ((CONTEXT === "production" || window.location.search.includes("loadgtm")) && GOOGLE_TAG_MANAGER_ID !== "undefined") {
             (function (w, d, s, l, i) {
                 w[l] = w[l] || [];
                 w[l].push({"gtm.start": new Date().getTime(), event: "gtm.js"});
@@ -30,7 +32,5 @@ export default class Analytics {
             'event': event,
             'value': value
         })
-
-        console.log({'logEvent': event, 'value': value})
     }
 }

@@ -17497,7 +17497,7 @@ var assetLoader = (function(){
 			return xhr.response;
 		} else if(xhr.response && typeof xhr.response === 'string') {
 			return JSON.parse(xhr.response);
-		} else if(xhr.responseText) {
+		} else if(xhr.responseType === 'text' || xhr.responseType === '') {
 			return JSON.parse(xhr.responseText);
 		}
 	}
