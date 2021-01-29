@@ -24,7 +24,7 @@
     "shx": "^0.3.3"
   },
   "scripts": {
-    "start": "parcel ./src/index.html",
+    "start": "parcel ./src/index.html ./src/embed-example.html",
     "prebuild-dev": "shx rm -rf dist/*",
     "build-dev": "parcel build ./src/index.html ./src/embed-example.html --no-minify --public-url ./",
     "prebuild": "shx rm -rf dist/*",
