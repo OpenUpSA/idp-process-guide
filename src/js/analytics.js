@@ -1,4 +1,3 @@
-require('dotenv').config();
 const GOOGLE_TAG_MANAGER_ID = `${process.env.GOOGLE_TAG_MANAGER_ID}`;
 const CONTEXT = `${process.env.CONTEXT}`;
 
