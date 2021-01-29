@@ -6,7 +6,6 @@
   "license": "MIT",
   "dependencies": {
     "babel-plugin-transform-class-properties": "^6.24.1",
-    "dotenv": "^8.2.0",
     "jest": "^26.4.2",
     "jest-cli": "^26.4.2",
     "utils": "^0.3.1"
@@ -21,12 +20,13 @@
     "cssnano": "^4.1.10",
     "parcel": "^1.12.4",
     "parcel-bundler": "^1.12.4",
-    "shx": "^0.3.2"
+    "parcel-plugin-data-src": "^1.0.1",
+    "shx": "^0.3.3"
   },
   "scripts": {
     "start": "parcel ./src/index.html",
     "prebuild-dev": "shx rm -rf dist/*",
-    "build-dev": "parcel build ./src/index.html --no-minify --public-url ./",
+    "build-dev": "parcel build ./src/index.html ./src/embed-example.html --no-minify --public-url ./",
     "prebuild": "shx rm -rf dist/*",
     "build": "parcel build ./src/index.html ./src/embed-example.html --public-url ./ ",
     "push-prod": "push-dir --dir=dist --branch=gh-pages --cleanup --verbose",
