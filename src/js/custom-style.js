@@ -11,3 +11,16 @@ export class setContainerWidth {
             }`;
   }
 }
+
+export class hideHeadingIfEmbedded {
+  constructor() {
+    if (window.self !== window.top) {
+      const style = document.createElement("style");
+      document.head.append(style);
+      style.textContent = `
+            .main>.nav {
+                display: none;
+            }`;
+    }
+  }
+}
