@@ -4208,6 +4208,7 @@ label {
 
 .engagement-expand-icon {
   margin-left: auto;
+  transition: transform 0.25s;
 }
 
 .engagement__content_inner {
