@@ -52,9 +52,7 @@ export class Geography {
     $(".footer__description_municipality")
       .closest("a")
       .attr("href", data.homepage_url);
-    $(".footer__description_municipality")
-      .closest("a")
-      .attr("href", data.homepage_url);
+    $(".footer__description_municipality strong").text(data.name);
   };
 
   setFooterContent = (data) => {
