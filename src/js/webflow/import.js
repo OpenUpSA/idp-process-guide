@@ -6,4 +6,10 @@ exports.transformDOM = function (window, $) {
   const tag = window.document.createElement("script");
   tag.setAttribute("src", "js/index.js");
   window.document.body.appendChild(tag);
+
+  const tagCSSModifications = window.document.createElement("link");
+  tagCSSModifications.setAttribute("href", "css/idp-guide-v2.webflow.modifications.css");
+  tagCSSModifications.setAttribute("rel", "stylesheet")
+  tagCSSModifications.setAttribute("type", "text/css")
+  window.document.head.appendChild(tagCSSModifications);
 };
