@@ -75,7 +75,20 @@ export class Engagements {
       .then((data) => {
         allEngagements = data;
         this.showCategories(data);
+        this.setBasedOnEventDataDisplay(data[data.length - 1].end_date);
       });
+  };
+
+  setBasedOnEventDataDisplay = (date) => {
+    $(".event-data-date__content .data-date__date").map((_i, ele) => {
+      $(ele).text(date);
+    });
+
+    $(".event-data-date__content").map((_i, ele) => {
+      $(ele).removeClass("hidden");
+    });
+
+    $(".event-data-date__wrapper .loading").remove();
   };
 
   showCategories = (engagements) => {
