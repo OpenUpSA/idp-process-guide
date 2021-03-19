@@ -47,6 +47,7 @@ export class Engagements {
     categoryContentClone = $(categoryContentClass)[0].cloneNode(true);
 
     engagementClone = $(engagementClass)[0].cloneNode(true);
+    $(engagementClone).removeClass('hidden');
     engagementRowClone = $(engagementRowClass)[0].cloneNode(true);
 
     emptyCategoryClone = $(".tab-pane__empty")[0].cloneNode(true);
