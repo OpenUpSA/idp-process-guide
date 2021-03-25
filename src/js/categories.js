@@ -18,6 +18,7 @@ export class Categories {
   showCategories = (categories) => {
     categories.forEach((category) => {
       let newCategory = $(".engagement-type").first().clone(true);
+      $(newCategory).removeClass('hidden')
       $(newCategory).find(".engagement-heading")[0].textContent = category.name;
       $(newCategory).find(".engagement-icon span")[0].className = category.icon;
       $(newCategory).find(".engagement__rich-text p")[0].textContent =
@@ -33,8 +34,14 @@ export class Categories {
         .find(".engagement-type__header")
         .first()
         .click(this.toggleCategory);
-      newCategory.appendTo(".engagement-types__wrapper");
+        if (category.public) {
+          newCategory.appendTo(".public-engagement-types__wrapper");
+        } else {
+          newCategory.appendTo(".activity-types__wrapper");
+        }
     });
+    $('.public-engagement-types__wrapper .loading').remove();
+    $('.activity-types__wrapper .loading').remove();
     $('.engagement-type').first().remove()
   };
 

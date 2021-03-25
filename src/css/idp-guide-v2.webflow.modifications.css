@@ -1,0 +1,11 @@
+.container {
+  width: 95%;
+  width: 70%;
+  max-width: 1225px;
+  padding-right: unset;
+  padding-left: unset;
+}
+
+.section.hidden {
+  display: none;
+}
