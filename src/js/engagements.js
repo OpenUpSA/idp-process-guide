@@ -47,7 +47,7 @@ export class Engagements {
     categoryContentClone = $(categoryContentClass)[0].cloneNode(true);
 
     engagementClone = $(engagementClass)[0].cloneNode(true);
-    $(engagementClone).removeClass('hidden');
+    $(engagementClone).removeClass("hidden");
     engagementRowClone = $(engagementRowClass)[0].cloneNode(true);
 
     emptyCategoryClone = $(".tab-pane__empty")[0].cloneNode(true);
@@ -75,6 +75,7 @@ export class Engagements {
       .then((data) => data.json())
       .then((data) => {
         allEngagements = data;
+        this.showActiveEngagements(allEngagements);
         this.showCategories(data);
         this.setBasedOnEventDataDisplay(data[data.length - 1].end_date);
       });
@@ -283,6 +284,65 @@ export class Engagements {
         self.filterEngagements(filterDays, true);
       });
     });
+  };
+
+  showActiveEngagements = (allEngagements) => {
+    let self = this;
+    let todaysDate = new Date();
+    todaysDate.setHours(0, 0, 0, 0);
+
+    let activeEngagements = allEngagements.filter((engagement) => {
+      let commentOpenDate = new Date(engagement.comment_open_date);
+      let commentCloseDate = new Date(engagement.comment_close_date);
+      commentOpenDate.setHours(0, 0, 0, 0);
+      commentCloseDate.setHours(0, 0, 0, 0);
+      return commentOpenDate <= todaysDate && commentCloseDate >= todaysDate;
+    });
+
+    if (activeEngagements && activeEngagements.length > 0) {
+      activeEngagements.forEach((e) => {
+        let item = engagementClone.cloneNode(true);
+        $(".engagement-block__header .engagement-block__icon div", item).attr(
+          "class",
+          e.category.icon
+        );
+        $(".engagement-block__header .engagement-block__title", item).text(
+          e.title
+        );
+
+        $(".engagement-block__details", item).html("");
+        self.appendRowToEngagementBlock(
+          item,
+          "fa fa-info",
+          e.short_desc,
+          null,
+          false
+        );
+
+        const dateText = getDateText(e);
+        self.appendRowToEngagementBlock(
+          item,
+          "fa fa-calendar",
+          dateText,
+          null,
+          false
+        );
+        e.actions.forEach((a) => {
+          self.appendRowToEngagementBlock(
+            item,
+            a.icon,
+            a.description_html,
+            a.confirmed_date,
+            true
+          );
+        });
+
+        $(".active-engagements__wrapper").append(item);
+      });
+    } else {
+      $('.active-engagements__no-data').removeClass('hidden');
+    }
+    $('.active-engagements__wrapper .loading').remove();
   };
 
   /**
