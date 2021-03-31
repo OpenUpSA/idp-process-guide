@@ -1,5 +1,6 @@
 import { getDateText } from "./utils";
 let apiUrl = "";
+let apiEventSubmissionsUrl = "";
 
 /* category */
 let categoryLinkClone = null;
@@ -30,6 +31,7 @@ let allCategories = null;
 export class Engagements {
   constructor(baseUrl, hostname, analytics) {
     apiUrl = `${baseUrl}/events?hostname=${hostname}`;
+    apiEventSubmissionsUrl = `${baseUrl}/event-submissions?hostname=${hostname}`;
     this.analytics = analytics;
 
     //tab-link
@@ -41,14 +43,28 @@ export class Engagements {
   }
 
   bindCommentForm = () => {
-    $(document).on('submit', '.modals .modal__response-form__content', function (e) {
-      e.preventDefault();
-      //console.log({e});
-      $('.modal__response-form__content').hide();
-      $('.modal__response-form .w-form-fail').hide();
-      $('.modal__response-form .w-form-done').show();
-      return true;
-    });
+    $(document).on(
+      "submit",
+      ".modals .modal__response-form__content",
+      function (e) {
+        e.preventDefault();
+
+        //TODO: Handle error state
+        $.post(apiEventSubmissionsUrl, {
+          submission: $("#comment").val(),
+          submission_issue: $("#issue").val(),
+          submitter_town: $("#town").val(),
+          submitter_name: $("#name").val(),
+          submitter_contact: $("#contact").val(),
+          event: $(".modals")[0].dataset.eventId,
+        });
+
+        $(".modal__response-form__content").hide();
+        $(".modal__response-form .w-form-fail").hide();
+        $(".modal__response-form .w-form-done").show();
+        return true;
+      }
+    );
   };
 
   setDomElements = () => {
@@ -311,7 +327,7 @@ export class Engagements {
 
   detectEventView = () => {
     const url = new URL(window.location.href);
-    const eventId = url.searchParams.get('event');
+    const eventId = url.searchParams.get("event");
     if (eventId) {
       const event = $(`[data-event-id=${eventId}]`).first();
       this.showEventModal(event);
@@ -319,62 +335,90 @@ export class Engagements {
   };
 
   showEventModal = (event) => {
-    $('.modals .modal__heading').text(event.find(".engagement-block__header .engagement-block__title").text());
-    $('.modals .modal__header-icon div').attr('class', event.data().categoryIcon);
-    $('.modals .modal__engagement-date_date').text(event.data().eventDate);
-    
+    $(".modals")[0].dataset.eventId = event.data().eventId;
+    $(".modals .modal__heading").text(
+      event.find(".engagement-block__header .engagement-block__title").text()
+    );
+    $(".modals .modal__header-icon div").attr(
+      "class",
+      event.data().categoryIcon
+    );
+    $(".modals .modal__engagement-date_date").text(event.data().eventDate);
+
     if (event.data().commentCloseDate) {
-      $('.modals .modal__engagement-close_date').text(event.data().commentCloseDate);
-      $('.modals .modal__engagement-close_date').parents('.modal__engagement-open').show();
+      $(".modals .modal__engagement-close_date").text(
+        event.data().commentCloseDate
+      );
+      $(".modals .modal__engagement-close_date")
+        .parents(".modal__engagement-open")
+        .show();
     } else {
-      $('.modals .modal__engagement-close_date').parents('.modal__engagement-open').hide();
+      $(".modals .modal__engagement-close_date")
+        .parents(".modal__engagement-open")
+        .hide();
     }
 
     if (event.data().commentOpenDate) {
-      $('.modals .modal__engagement-open_date').text(event.data().commentOpenDate);
-      $('.modals .modal__engagement-open_date').parents('.modal__engagement-open').show();
+      $(".modals .modal__engagement-open_date").text(
+        event.data().commentOpenDate
+      );
+      $(".modals .modal__engagement-open_date")
+        .parents(".modal__engagement-open")
+        .show();
     } else {
-      $('.modals .modal__engagement-open_date').parents('.modal__engagement-open').hide();
+      $(".modals .modal__engagement-open_date")
+        .parents(".modal__engagement-open")
+        .hide();
     }
-    
-    $('.modals .modal__engagement-open_date').text(event.data().commentOpenDate);
-    $('.modals .modal__event-info p').text(event.data().shortDesc);    
-    $('.modals').removeClass('hidden');
 
-    if (this.isTodayWithinCommentPeriod(event.data().commentOpenDate, event.data().commentCloseDate)) {
-      $('.modal__response-form .w-form-fail').hide();
-      $('.modal__response-form .w-form-done').hide();
-      $('.modals .modal__response-form__content').show();
+    $(".modals .modal__engagement-open_date").text(
+      event.data().commentOpenDate
+    );
+    $(".modals .modal__event-info p").text(event.data().shortDesc);
+    $(".modals").removeClass("hidden");
+
+    if (
+      this.isTodayWithinCommentPeriod(
+        event.data().commentOpenDate,
+        event.data().commentCloseDate
+      )
+    ) {
+      $(".modal__response-form .w-form-fail").hide();
+      $(".modal__response-form .w-form-done").hide();
+      $(".modals .modal__response-form__content").show();
     } else {
-      $('.modals .modal__response-form__content').hide();
+      $(".modals .modal__response-form__content").hide();
     }
-    
-    $('.modals').first().show();
+
+    $(".modals").first().show();
   };
 
   eventClick = (e) => {
-      const currentTarget = e.currentTarget;
-      const event = $(currentTarget);
-      this.showEventModal(event);
+    const currentTarget = e.currentTarget;
+    const event = $(currentTarget);
+    this.showEventModal(event);
   };
 
   isTodayWithinCommentPeriod = (openDate, closeDate) => {
     let todaysDate = new Date();
     let commentOpenDate = new Date(openDate);
     let commentCloseDate = new Date(closeDate);
-    
+
     todaysDate.setHours(0, 0, 0, 0);
     commentOpenDate.setHours(0, 0, 0, 0);
     commentCloseDate.setHours(0, 0, 0, 0);
-    
+
     return commentOpenDate <= todaysDate && commentCloseDate >= todaysDate;
   };
 
   showActiveEngagements = (allEngagements) => {
     let self = this;
-    
+
     let activeEngagements = allEngagements.filter((engagement) => {
-      return this.isTodayWithinCommentPeriod(engagement.comment_open_date, engagement.comment_close_date)
+      return this.isTodayWithinCommentPeriod(
+        engagement.comment_open_date,
+        engagement.comment_close_date
+      );
     });
 
     if (activeEngagements && activeEngagements.length > 0) {
@@ -428,9 +472,9 @@ export class Engagements {
         $(".active-engagements__wrapper").append(item);
       });
     } else {
-      $('.active-engagements__no-data').removeClass('hidden');
+      $(".active-engagements__no-data").removeClass("hidden");
     }
-    $('.active-engagements__wrapper .loading').remove();
+    $(".active-engagements__wrapper .loading").remove();
   };
 
   /**
