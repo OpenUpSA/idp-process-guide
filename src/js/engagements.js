@@ -78,6 +78,7 @@ export class Engagements {
         this.showActiveEngagements(allEngagements);
         this.showCategories(data);
         this.setBasedOnEventDataDisplay(data[data.length - 1].end_date);
+        this.detectEventView();
       });
   };
 
@@ -178,6 +179,17 @@ export class Engagements {
     if (data !== null && data.length > 0) {
       data.forEach((e) => {
         let item = engagementClone.cloneNode(true);
+        const dateText = getDateText(e);
+
+        //TODO: Refactor
+        item.dataset.eventId = e.id;
+        item.dataset.commentOpenDate = e.comment_open_date;
+        item.dataset.commentCloseDate = e.comment_close_date;
+        item.dataset.categoryIcon = e.category.icon;
+        item.dataset.eventDate = dateText;
+        item.dataset.shortDesc = e.short_desc;
+        item.onclick = this.eventClick;
+
         $(".engagement-block__header .engagement-block__icon div", item).attr(
           "class",
           e.category.icon
@@ -195,7 +207,6 @@ export class Engagements {
           false
         );
 
-        const dateText = getDateText(e);
         self.appendRowToEngagementBlock(
           item,
           "fa fa-calendar",
@@ -286,6 +297,47 @@ export class Engagements {
     });
   };
 
+  detectEventView = () => {
+    const url = new URL(window.location.href);
+    const eventId = url.searchParams.get('event');
+    if (eventId) {
+      const event = $(`[data-event-id=${eventId}]`).first();
+      this.showEventModal(event);
+    }
+  };
+
+  showEventModal = (event) => {
+    $('.modals .modal__heading').text(event.find(".engagement-block__header .engagement-block__title").text());
+    $('.modals .modal__header-icon div').attr('class', event.data().categoryIcon);
+    $('.modals .modal__engagement-date_date').text(event.data().eventDate);
+    
+    if (event.data().commentCloseDate) {
+      $('.modals .modal__engagement-close_date').text(event.data().commentCloseDate);
+      $('.modals .modal__engagement-close_date').parents('.modal__engagement-open').show();
+    } else {
+      $('.modals .modal__engagement-close_date').parents('.modal__engagement-open').hide();
+    }
+
+    if (event.data().commentOpenDate) {
+      $('.modals .modal__engagement-open_date').text(event.data().commentOpenDate);
+      $('.modals .modal__engagement-open_date').parents('.modal__engagement-open').show();
+    } else {
+      $('.modals .modal__engagement-open_date').parents('.modal__engagement-open').hide();
+    }
+    
+    $('.modals .modal__engagement-open_date').text(event.data().commentOpenDate);
+    $('.modals .modal__event-info p').text(event.data().shortDesc);    
+    $('.modals').removeClass('hidden');
+    $('.modals .modal__response-form__content').hide();
+    $('.modals').first().show();
+  };
+
+  eventClick = (e) => {
+      const currentTarget = e.currentTarget;
+      const event = $(currentTarget);
+      this.showEventModal(event);
+  };
+
   showActiveEngagements = (allEngagements) => {
     let self = this;
     let todaysDate = new Date();
@@ -301,7 +353,18 @@ export class Engagements {
 
     if (activeEngagements && activeEngagements.length > 0) {
       activeEngagements.forEach((e) => {
+        const dateText = getDateText(e);
         let item = engagementClone.cloneNode(true);
+
+        //TODO: Refactor
+        item.dataset.eventId = e.id;
+        item.dataset.commentOpenDate = e.comment_open_date;
+        item.dataset.commentCloseDate = e.comment_close_date;
+        item.dataset.categoryIcon = e.category.icon;
+        item.dataset.eventDate = dateText;
+        item.dataset.shortDesc = e.short_desc;
+        item.onclick = this.eventClick;
+
         $(".engagement-block__header .engagement-block__icon div", item).attr(
           "class",
           e.category.icon
@@ -319,7 +382,6 @@ export class Engagements {
           false
         );
 
-        const dateText = getDateText(e);
         self.appendRowToEngagementBlock(
           item,
           "fa fa-calendar",

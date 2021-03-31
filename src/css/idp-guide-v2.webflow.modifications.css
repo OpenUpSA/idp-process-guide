@@ -6,6 +6,6 @@
   padding-left: unset;
 }
 
-.section.hidden {
+.section.hidden, .is-hidden {
   display: none;
 }

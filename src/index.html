@@ -1,14 +1,17 @@
 <!DOCTYPE html>
-<!--  This site was created in Webflow. http://www.webflow.com  --><!--  Last Published: Thu Mar 11 2021 16:34:31 GMT+0000 (Coordinated Universal Time)  -->
+<!--  This site was created in Webflow. http://www.webflow.com  --><!--  Last Published: Fri Mar 26 2021 08:24:34 GMT+0000 (Coordinated Universal Time)  -->
 <html
-  data-wf-page="603f3ae09a2e9f3a16a28160"
+  data-wf-page="60519223827498b7896e6b2f"
   data-wf-site="5f2bb79b0333ce8ae37ca282"
 >
   <head>
     <meta charset="utf-8" />
-    <title>Public Participation Guide</title>
-    <meta content="Public Participation Guide" property="og:title" />
-    <meta content="Public Participation Guide" property="twitter:title" />
+    <title>Feature preview (engagement modal)</title>
+    <meta content="Feature preview (engagement modal)" property="og:title" />
+    <meta
+      content="Feature preview (engagement modal)"
+      property="twitter:title"
+    />
     <meta content="width=device-width, initial-scale=1" name="viewport" />
     <meta content="Webflow" name="generator" />
     <link href="css/normalize.css" rel="stylesheet" type="text/css" />
@@ -61,6 +64,115 @@
     <a href="#page-top" class="back-to-top w-inline-block">
       <div class="fa"></div>
     </a>
+    <div class="modals hidden">
+      <div class="modals__card">
+        <img
+          src="images/close-24px.svg"
+          loading="lazy"
+          data-w-id="3132bcf9-f64b-be58-0e70-494246181508"
+          alt=""
+          class="modal__close"
+        />
+        <div class="modal__header">
+          <div class="modal__header-icon primary-text">
+            <div class="fa fa-spinner"></div>
+          </div>
+          <h2 class="modal__heading">Loading...</h2>
+        </div>
+        <div class="modal__engagement-date_wrapper">
+          <div class="modal__engagement-open">
+            <div>
+              <strong>Comment opens:</strong>
+              <span class="modal__engagement-open_date">Loading...</span>
+            </div>
+          </div>
+          <div class="modal__engagement-open">
+            <div>
+              <strong>Comment closes:</strong>
+              <span class="modal__engagement-close_date">Loading...</span>
+            </div>
+          </div>
+          <div class="modal__engagement-open">
+            <div>
+              <strong>Engagement date:</strong>
+              <span class="modal__engagement-date_date">Loading...</span>
+            </div>
+          </div>
+        </div>
+        <div class="modal__event-info w-richtext">
+          <p>Loading...</p>
+        </div>
+        <div class="modal__response-form">
+          <div class="loading hidden">
+            <div
+              style="
+                -webkit-transform: translate3d(-50%, 0, 0) scale3d(1, 1, 1)
+                  rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);
+                -moz-transform: translate3d(-50%, 0, 0) scale3d(1, 1, 1)
+                  rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);
+                -ms-transform: translate3d(-50%, 0, 0) scale3d(1, 1, 1)
+                  rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);
+                transform: translate3d(-50%, 0, 0) scale3d(1, 1, 1) rotateX(0)
+                  rotateY(0) rotateZ(0) skew(0, 0);
+              "
+              class="loading__gradient"
+            ></div>
+          </div>
+          <form
+            id="wf-form-Email-Form"
+            name="wf-form-Email-Form"
+            data-name="Email Form"
+            class="modal__response-form__content"
+          >
+            <h3 class="modal__form-title">
+              Provide feedback to your municipality
+            </h3>
+            <label for="name">Name</label
+            ><input
+              type="text"
+              class="w-input"
+              maxlength="256"
+              name="name"
+              data-name="Name"
+              placeholder=""
+              id="name"
+            /><label for="email">Email Address</label
+            ><input
+              type="email"
+              class="w-input"
+              maxlength="256"
+              name="email"
+              data-name="Email"
+              placeholder=""
+              id="email"
+              required=""
+            />
+            <div class="modal__form-submit">
+              <input
+                type="submit"
+                value="Submit feedback"
+                data-wait="Please wait..."
+                class="button primary-fill w-button"
+              />
+            </div>
+          </form>
+          <div class="modal__response-form__success w-form-done">
+            <div>
+              Thank you for your engagement. Your feedback has been submitted!
+            </div>
+          </div>
+          <div class="modal__response-form__error w-form-fail">
+            <div>
+              Oops! Something went wrong while submitting your feedback.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        data-w-id="3132bcf9-f64b-be58-0e70-494246181525"
+        class="modals__bg"
+      ></div>
+    </div>
     <div class="main">
       <div class="nav">
         <div class="container nav">
@@ -215,7 +327,7 @@
           <div class="hero-bg"></div>
           <div class="hero">
             <div
-              id="w-node-_9fad8210-1fd2-2aa3-c64b-fc47f0d7bd53-16a28160"
+              id="w-node-_9fad8210-1fd2-2aa3-c64b-fc47f0d7bd53-896e6b2f"
               class="hero-col hero-col--left"
             >
               <div class="hero__overline_wrap">
@@ -258,7 +370,7 @@
               </div>
             </div>
             <div
-              id="w-node-_60ceeb1f-08a6-58d0-94d3-d82199e4b67c-16a28160"
+              id="w-node-_60ceeb1f-08a6-58d0-94d3-d82199e4b67c-896e6b2f"
               class="hero-col hero-col--right"
             >
               <img
@@ -317,7 +429,7 @@
               <div class="loading__gradient loading__gradient--light"></div>
             </div>
             <div
-              id="w-node-b37b7906-61b1-0553-7ba4-3dcb815e166b-16a28160"
+              id="w-node-b37b7906-61b1-0553-7ba4-3dcb815e166b-896e6b2f"
               class="active-engagements__no-data hidden"
             >
               <div>
@@ -328,16 +440,19 @@
               </div>
             </div>
           </div>
-          <div class="section__button-wrap">
+          <div class="section__button-wrap hidden">
             <a
               href="#all-engagements-activities"
               class="button primary-fill w-button"
               >All engagements and activities</a
             >
+            <div class="modal-open is-hidden">
+              <a href="#" class="modal-open w-button">Open modal</a>
+            </div>
           </div>
         </div>
       </div>
-      <div id="engagement-activity-types" class="section grey padding-bottom">
+      <div id="engagement-activity-types" class="section grey">
         <div class="container">
           <h2 class="section-title">Types of engagements and activities</h2>
           <div class="subheading bold">Public engagements:</div>
@@ -446,7 +561,7 @@
           </div>
         </div>
       </div>
-      <div id="all-engagements-activities" class="section padding-bottom">
+      <div id="all-engagements-activities" class="section grey padding-bottom">
         <div class="container">
           <div class="upcoming-engagements__header">
             <h2 class="section-title">All engagements and activities</h2>
@@ -487,7 +602,7 @@
             class="upcoming-engagements__grid w-tabs"
           >
             <div
-              id="w-node-b551ebdc-9588-381f-b276-58c8138e8e0f-16a28160"
+              id="w-node-b551ebdc-9588-381f-b276-58c8138e8e0f-896e6b2f"
               class="tabs-menu w-tab-menu"
             >
               <a
@@ -517,7 +632,7 @@
               </a>
             </div>
             <div
-              id="w-node-b551ebdc-9588-381f-b276-58c8138e8e19-16a28160"
+              id="w-node-b551ebdc-9588-381f-b276-58c8138e8e19-896e6b2f"
               class="tabs-content w-tab-content"
             >
               <div data-w-tab="Tab 4" class="tab-pane w-tab-pane w--tab-active">
@@ -547,12 +662,12 @@
           <div class="footer-grid">
             <img
               src="images/openup-logo-2.svg"
-              id="w-node-_168a692e-ad2b-a28e-d953-ebb1a0e5c425-16a28160"
+              id="w-node-_168a692e-ad2b-a28e-d953-ebb1a0e5c425-896e6b2f"
               alt=""
               class="footer__logo"
             />
             <div
-              id="w-node-a558bc15-2480-a7c6-21f6-55d9efe0d5ea-16a28160"
+              id="w-node-a558bc15-2480-a7c6-21f6-55d9efe0d5ea-896e6b2f"
               class="footer-description__wrap"
             >
               <p class="footer__description hidden">
@@ -585,7 +700,7 @@
               </div>
             </div>
             <div
-              id="w-node-_168a692e-ad2b-a28e-d953-ebb1a0e5c431-16a28160"
+              id="w-node-_168a692e-ad2b-a28e-d953-ebb1a0e5c431-896e6b2f"
               class="footer__legal"
             >
               <p class="footer__legal_copyright">
@@ -611,7 +726,7 @@
               </div>
             </div>
             <div
-              id="w-node-_168a692e-ad2b-a28e-d953-ebb1a0e5c43e-16a28160"
+              id="w-node-_168a692e-ad2b-a28e-d953-ebb1a0e5c43e-896e6b2f"
               class="footer__links"
             >
               <div class="footer__header primary-text">Contact OpenUp</div>
@@ -638,11 +753,11 @@
               </a>
             </div>
             <div
-              id="w-node-_168a692e-ad2b-a28e-d953-ebb1a0e5c44a-16a28160"
+              id="w-node-_168a692e-ad2b-a28e-d953-ebb1a0e5c44a-896e6b2f"
               class="footer__links"
             >
               <div class="footer__header primary-text">Useful Links</div>
-              <a href="#" class="footer__link w-inline-block" target="_blank">
+              <a href="#" class="footer__link w-inline-block">
                 <div class="footer__muni-site hidden">Municipal website</div>
                 <div class="loading">
                   <div
@@ -661,7 +776,7 @@
                   ></div>
                 </div>
               </a>
-              <a href="#" class="footer__link w-inline-block" target="_blank">
+              <a href="#" class="footer__link w-inline-block">
                 <div class="footer__muni-bylaws hidden">Municipal by-laws</div>
                 <div class="loading">
                   <div
@@ -680,28 +795,7 @@
                   ></div>
                 </div>
               </a>
-              <a href="#" class="footer__link w-inline-block" target="_blank">
-                <div class="footer__muni-financial-performance hidden">
-                  Municipal financial performance
-                </div>
-                <div class="loading">
-                  <div
-                    style="
-                      -webkit-transform: translate3d(-50%, 0, 0)
-                        scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0)
-                        skew(0, 0);
-                      -moz-transform: translate3d(-50%, 0, 0) scale3d(1, 1, 1)
-                        rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);
-                      -ms-transform: translate3d(-50%, 0, 0) scale3d(1, 1, 1)
-                        rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);
-                      transform: translate3d(-50%, 0, 0) scale3d(1, 1, 1)
-                        rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);
-                    "
-                    class="loading__gradient"
-                  ></div>
-                </div>
-              </a>
-              <a href="#" class="footer__link w-inline-block" target="_blank">
+              <a href="#" class="footer__link w-inline-block">
                 <div class="footer__ward-councillor hidden">
                   Find your ward councillor
                 </div>
@@ -734,7 +828,7 @@
           <h3 class="styles__subheader">Engagement tab links</h3>
           <div class="styles__wrap grid">
             <div
-              id="w-node-c995af84-784b-1239-eb5d-9986673d1d9a-16a28160"
+              id="w-node-c995af84-784b-1239-eb5d-9986673d1d9a-896e6b2f"
               class="engagement-block__wrap"
             >
               <h4 class="styles__element-heading">.tab-link .current</h4>
@@ -762,7 +856,7 @@
               </div>
             </div>
             <div
-              id="w-node-d953417c-8159-6cac-856a-4475c318d88c-16a28160"
+              id="w-node-d953417c-8159-6cac-856a-4475c318d88c-896e6b2f"
               class="engagement-block__wrap"
             >
               <h4 class="styles__element-heading">.tab-link</h4>
@@ -793,7 +887,7 @@
           <h3 class="styles__subheader">Engagement tab content</h3>
           <div class="styles__wrap grid">
             <div
-              id="w-node-abbc1cde-7bbe-2487-6dbc-1c3f7a0a4a31-16a28160"
+              id="w-node-abbc1cde-7bbe-2487-6dbc-1c3f7a0a4a31-896e6b2f"
               class="engagement-block__wrap"
             >
               <h4 class="styles__element-heading">
@@ -805,7 +899,7 @@
           </div>
           <div class="styles__wrap grid">
             <div
-              id="w-node-_0ec9e8b1-7db0-3a1b-f1e4-a0a3f892fd48-16a28160"
+              id="w-node-_0ec9e8b1-7db0-3a1b-f1e4-a0a3f892fd48-896e6b2f"
               class="engagement-block__wrap"
             >
               <h4 class="styles__element-heading">
@@ -813,7 +907,7 @@
               </h4>
               <div class="tab-pane">
                 <div
-                  id="w-node-_7e016152-eaf1-bd6c-8dd2-fd9788457070-16a28160"
+                  id="w-node-_7e016152-eaf1-bd6c-8dd2-fd9788457070-896e6b2f"
                   class="active-engagements__no-data"
                 >
                   <div>
@@ -828,7 +922,7 @@
           </div>
           <div class="styles__wrap grid">
             <div
-              id="w-node-_707b99b4-2d80-4f5e-99b5-67e2ccc1e304-16a28160"
+              id="w-node-_707b99b4-2d80-4f5e-99b5-67e2ccc1e304-896e6b2f"
               class="engagement-block__wrap"
             >
               <h4 class="styles__element-heading">
@@ -857,7 +951,7 @@
           </div>
           <div class="styles__wrap grid">
             <div
-              id="w-node-_39854cc1-ab9f-cb99-e813-c715535e8132-16a28160"
+              id="w-node-_39854cc1-ab9f-cb99-e813-c715535e8132-896e6b2f"
               class="engagement-block__wrap"
             >
               <h4 class="styles__element-heading">.tab-pane__empty</h4>
