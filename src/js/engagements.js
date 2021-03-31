@@ -37,7 +37,19 @@ export class Engagements {
     this.getEngagements();
     this.setFiltering();
     this.detectExternalLinkClick();
+    this.bindCommentForm();
   }
+
+  bindCommentForm = () => {
+    $(document).on('submit', '.modals .modal__response-form__content', function (e) {
+      e.preventDefault();
+      console.log({e});
+      $('.modal__response-form__content').hide();
+      $('.modal__response-form .w-form-fail').hide();
+      $('.modal__response-form .w-form-done').show();
+      return true;
+    });
+  };
 
   setDomElements = () => {
     categoryLinkWrapper = $(".tabs-menu");
@@ -324,15 +336,15 @@ export class Engagements {
     } else {
       $('.modals .modal__engagement-open_date').parents('.modal__engagement-open').hide();
     }
-
-
     
     $('.modals .modal__engagement-open_date').text(event.data().commentOpenDate);
     $('.modals .modal__event-info p').text(event.data().shortDesc);    
     $('.modals').removeClass('hidden');
 
     if (this.isTodayWithinCommentPeriod(event.data().commentOpenDate, event.data().commentCloseDate)) {
-      $('.modals .modal__response-form__content').hide();
+      $('.modal__response-form .w-form-fail').hide();
+      $('.modal__response-form .w-form-done').hide();
+      $('.modals .modal__response-form__content').show();
     } else {
       $('.modals .modal__response-form__content').hide();
     }
