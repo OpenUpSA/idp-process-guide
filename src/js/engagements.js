@@ -324,11 +324,19 @@ export class Engagements {
     } else {
       $('.modals .modal__engagement-open_date').parents('.modal__engagement-open').hide();
     }
+
+
     
     $('.modals .modal__engagement-open_date').text(event.data().commentOpenDate);
     $('.modals .modal__event-info p').text(event.data().shortDesc);    
     $('.modals').removeClass('hidden');
-    $('.modals .modal__response-form__content').hide();
+
+    if (this.isTodayWithinCommentPeriod(event.data().commentOpenDate, event.data().commentCloseDate)) {
+      $('.modals .modal__response-form__content').hide();
+    } else {
+      $('.modals .modal__response-form__content').hide();
+    }
+    
     $('.modals').first().show();
   };
 
@@ -338,17 +346,23 @@ export class Engagements {
       this.showEventModal(event);
   };
 
+  isTodayWithinCommentPeriod = (openDate, closeDate) => {
+    let todaysDate = new Date();
+    let commentOpenDate = new Date(openDate);
+    let commentCloseDate = new Date(closeDate);
+    
+    todaysDate.setHours(0, 0, 0, 0);
+    commentOpenDate.setHours(0, 0, 0, 0);
+    commentCloseDate.setHours(0, 0, 0, 0);
+    
+    return commentOpenDate <= todaysDate && commentCloseDate >= todaysDate;
+  };
+
   showActiveEngagements = (allEngagements) => {
     let self = this;
-    let todaysDate = new Date();
-    todaysDate.setHours(0, 0, 0, 0);
-
+    
     let activeEngagements = allEngagements.filter((engagement) => {
-      let commentOpenDate = new Date(engagement.comment_open_date);
-      let commentCloseDate = new Date(engagement.comment_close_date);
-      commentOpenDate.setHours(0, 0, 0, 0);
-      commentCloseDate.setHours(0, 0, 0, 0);
-      return commentOpenDate <= todaysDate && commentCloseDate >= todaysDate;
+      return this.isTodayWithinCommentPeriod(engagement.comment_open_date, engagement.comment_close_date)
     });
 
     if (activeEngagements && activeEngagements.length > 0) {
