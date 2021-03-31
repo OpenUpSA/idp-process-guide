@@ -344,7 +344,7 @@ export class Engagements {
     if (this.isTodayWithinCommentPeriod(event.data().commentOpenDate, event.data().commentCloseDate)) {
       $('.modal__response-form .w-form-fail').hide();
       $('.modal__response-form .w-form-done').hide();
-      $('.modals .modal__response-form__content').show();
+      $('.modals .modal__response-form__content').hide();
     } else {
       $('.modals .modal__response-form__content').hide();
     }
