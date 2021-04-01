@@ -218,6 +218,10 @@ export class Engagements {
         item.dataset.shortDesc = e.short_desc;
         item.onclick = this.eventClick;
 
+        if (!this.isTodayWithinCommentPeriod(e.comment_open_date, e.comment_close_date)) {
+          $(".engagement-block__button", item).hide();
+        }
+
         $(".engagement-block__header .engagement-block__icon div", item).attr(
           "class",
           e.category.icon
@@ -269,6 +273,7 @@ export class Engagements {
     isActionRow = false
   ) => {
     let row = engagementRowClone.cloneNode(true);
+    $(".engagement-block__rich-text", row).empty();
     $(".engagement-block__details_icon div", row).attr("class", iconClass);
     if (isActionRow) {
       if (rowDate !== null && rowDate !== "") {
@@ -388,7 +393,6 @@ export class Engagements {
       $(".modals .modal__response-form").show();
       $(".modals .modal__response-form__content").show();
     } else {
-      console.log('hide')
       $(".modals .modal__response-form").hide();
     }
 
@@ -435,7 +439,7 @@ export class Engagements {
         item.dataset.categoryIcon = e.category.icon;
         item.dataset.eventDate = dateText;
         item.dataset.shortDesc = e.short_desc;
-        item.onclick = this.eventClick;
+        item.onclick = this.eventClick;        
 
         $(".engagement-block__header .engagement-block__icon div", item).attr(
           "class",

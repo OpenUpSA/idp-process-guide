@@ -17,3 +17,7 @@
 .primary-text {
   color: #333;
 }
+
+.engagement-block__button {
+  display: unset;
+}
