@@ -28,6 +28,28 @@ const engagementRowClass = ".engagement-block__details_row";
 let allEngagements = null;
 let allCategories = null;
 
+let eventSubmissionIssues = [
+  "Waste Management",
+  "Local Economic Development",
+  "Water & Sanitation",
+  "Electricity",
+  "Housing",
+  "Roads",
+  "Safety & Crime",
+  "Job creation",
+  "Youth Development",
+  "Arts & Culture",
+  "Health",
+  "Library services",
+  "Home Affairs",
+  "SASSA (grants)",
+  "Social Development",
+  "Education",
+  "Public Transport",
+  "Agriculture & Rural Development",
+  "Other",
+];
+
 export class Engagements {
   constructor(baseUrl, hostname, analytics) {
     apiUrl = `${baseUrl}/events?hostname=${hostname}`;
@@ -39,32 +61,39 @@ export class Engagements {
     this.getEngagements();
     this.setFiltering();
     this.detectExternalLinkClick();
+    this.setupCommentForm();
     this.bindCommentForm();
-  }
+  };
+
+  setupCommentForm = () => {
+    const issueElement = $('#issue')[0];
+    issueElement.options.remove(0);
+    eventSubmissionIssues.forEach((issue, index) => {
+      issueElement.options[issueElement.options.length] = new Option(issue, index);
+    });
+  };
+
+
 
   bindCommentForm = () => {
-    $(document).on(
-      "submit",
-      ".modals form",
-      function (e) {
-        e.preventDefault();
+    $(document).on("submit", ".modals form", function (e) {
+      e.preventDefault();
 
-        //TODO: Handle error state
-        $.post(apiEventSubmissionsUrl, {
-          submission: $("#comment").val(),
-          submission_issue: $("#issue").val(),
-          submitter_town: $("#town").val(),
-          submitter_name: $("#name").val(),
-          submitter_contact: $("#contact").val(),
-          event: $(".modals")[0].dataset.eventId,
-        });
+      //TODO: Handle error state
+      $.post(apiEventSubmissionsUrl, {
+        submission: $("#comment").val(),
+        submission_issue: $("#issue").val(),
+        submitter_town: $("#town").val(),
+        submitter_name: $("#name").val(),
+        submitter_contact: $("#contact").val(),
+        event: $(".modals")[0].dataset.eventId,
+      });
 
-        $(".modals .modal__response-form__content").hide();
-        $(".modals .modal__response-form .w-form-fail").hide();
-        $(".modals .modal__response-form .w-form-done").show();
-        return true;
-      }
-    );
+      $(".modals .modal__response-form__content").hide();
+      $(".modals .modal__response-form .w-form-fail").hide();
+      $(".modals .modal__response-form .w-form-done").show();
+      return true;
+    });
   };
 
   setDomElements = () => {
@@ -218,7 +247,12 @@ export class Engagements {
         item.dataset.shortDesc = e.short_desc;
         item.onclick = this.eventClick;
 
-        if (!this.isTodayWithinCommentPeriod(e.comment_open_date, e.comment_close_date)) {
+        if (
+          !this.isTodayWithinCommentPeriod(
+            e.comment_open_date,
+            e.comment_close_date
+          )
+        ) {
           $(".engagement-block__button", item).hide();
         }
 
@@ -439,7 +473,7 @@ export class Engagements {
         item.dataset.categoryIcon = e.category.icon;
         item.dataset.eventDate = dateText;
         item.dataset.shortDesc = e.short_desc;
-        item.onclick = this.eventClick;        
+        item.onclick = this.eventClick;
 
         $(".engagement-block__header .engagement-block__icon div", item).attr(
           "class",
