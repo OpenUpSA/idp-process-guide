@@ -45,7 +45,7 @@ export class Engagements {
   bindCommentForm = () => {
     $(document).on(
       "submit",
-      ".modals .modal__response-form__content",
+      ".modals form",
       function (e) {
         e.preventDefault();
 
@@ -59,9 +59,9 @@ export class Engagements {
           event: $(".modals")[0].dataset.eventId,
         });
 
-        $(".modal__response-form__content").hide();
-        $(".modal__response-form .w-form-fail").hide();
-        $(".modal__response-form .w-form-done").show();
+        $(".modals .modal__response-form__content").hide();
+        $(".modals .modal__response-form .w-form-fail").hide();
+        $(".modals .modal__response-form .w-form-done").show();
         return true;
       }
     );
@@ -383,11 +383,13 @@ export class Engagements {
         event.data().commentCloseDate
       )
     ) {
-      $(".modal__response-form .w-form-fail").hide();
-      $(".modal__response-form .w-form-done").hide();
+      $(".modals .modal__response-form .w-form-fail").hide();
+      $(".modals .modal__response-form .w-form-done").hide();
+      $(".modals .modal__response-form").show();
       $(".modals .modal__response-form__content").show();
     } else {
-      $(".modals .modal__response-form__content").hide();
+      console.log('hide')
+      $(".modals .modal__response-form").hide();
     }
 
     $(".modals").first().show();
