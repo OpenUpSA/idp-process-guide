@@ -1,6 +1,7 @@
 import { getDateText } from "./utils";
 let apiUrl = "";
 let apiEventSubmissionsUrl = "";
+let apiGeographyUrl = "";
 
 /* category */
 let categoryLinkClone = null;
@@ -54,6 +55,7 @@ export class Engagements {
   constructor(baseUrl, hostname, analytics) {
     apiUrl = `${baseUrl}/events?hostname=${hostname}`;
     apiEventSubmissionsUrl = `${baseUrl}/event-submissions?hostname=${hostname}`;
+    apiGeographyUrl = `${baseUrl}/municipality?hostname=${hostname}`;
     this.analytics = analytics;
 
     //tab-link
@@ -61,8 +63,18 @@ export class Engagements {
     this.getEngagements();
     this.setFiltering();
     this.detectExternalLinkClick();
-    this.setupCommentForm();
+    this.getGeographyData()
     this.bindCommentForm();
+  };
+
+  //#TODO: Reused from geography.js, refactor
+  getGeographyData = () => {
+    fetch(apiGeographyUrl)
+      .then((data) => data.json())
+      .then((data) => {
+        this.municipality = data;
+        this.setupCommentForm();
+      });
   };
 
   setupCommentForm = () => {
@@ -70,6 +82,12 @@ export class Engagements {
     issueElement.options.remove(0);
     eventSubmissionIssues.forEach((issue, index) => {
       issueElement.options[issueElement.options.length] = new Option(issue, index);
+    });
+
+    const townElement = $('#town')[0];
+    townElement.options.remove(0);
+    this.municipality.towns.forEach((town, index) => {
+      townElement.options[townElement.options.length] = new Option(town, index);
     });
   };
 
