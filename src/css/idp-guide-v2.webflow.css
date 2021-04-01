@@ -226,7 +226,6 @@ label {
 }
 
 .section {
-  position: relative;
   padding-top: 6em;
 }
 
@@ -4204,6 +4203,7 @@ label {
 }
 
 .engagement-type {
+  position: relative;
   display: block;
   border-radius: 3px;
   background-color: #fff;
@@ -4478,7 +4478,6 @@ label {
   position: relative;
   display: -ms-grid;
   display: grid;
-  min-height: 50px;
   -webkit-box-align: start;
   -webkit-align-items: start;
   -ms-flex-align: start;
@@ -4591,6 +4590,7 @@ label {
   -webkit-align-items: center;
   -ms-flex-align: center;
   align-items: center;
+  font-size: 1.5em;
 }
 
 .modal__header-icon.primary-text {
@@ -5238,6 +5238,10 @@ label {
     grid-template-columns: 1fr;
   }
 
+  .modal__heading {
+    font-size: 1.1em;
+  }
+
   .modal__event-info {
     font-size: 0.9em;
   }
@@ -5245,6 +5249,7 @@ label {
   .modal__header-icon {
     width: 32px;
     height: 32px;
+    font-size: 1em;
   }
 }
 
@@ -5415,7 +5420,7 @@ label {
 
   .modals__card {
     margin: 12px;
-    padding: 14px;
+    padding: 8px 14px 14px;
     font-size: 1.2em;
   }
 
@@ -5432,8 +5437,8 @@ label {
   }
 
   .modal__close {
-    margin-top: 16px;
-    margin-right: 16px;
+    margin-top: 8px;
+    margin-right: 8px;
   }
 
   .alert-signup__top {
@@ -5657,7 +5662,7 @@ label {
   }
 
   .modal__header {
-    font-size: 0.8em;
+    margin-right: 37px;
   }
 }
 

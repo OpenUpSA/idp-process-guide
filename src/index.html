@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!--  This site was created in Webflow. http://www.webflow.com  --><!--  Last Published: Tue Mar 30 2021 06:57:50 GMT+0000 (Coordinated Universal Time)  -->
+<!--  This site was created in Webflow. http://www.webflow.com  --><!--  Last Published: Thu Apr 01 2021 10:31:46 GMT+0000 (Coordinated Universal Time)  -->
 <html
   data-wf-page="60519223827498b7896e6b2f"
   data-wf-site="5f2bb79b0333ce8ae37ca282"
@@ -110,10 +110,11 @@
             class="modal__response-form__content hidden"
           >
             <h3 class="modal__form-title">
-              Provide comment to your municipality
+              Provide feedback to your municipality
             </h3>
-            
-            <label for="comment">Your comment <small>(* required)</small></label>
+            <label for="comment"
+              >Your comment <small>(* required)</small></label
+            >
             <textarea
               required="true"
               class="w-input"
@@ -127,116 +128,48 @@
             <label for="town">Town</label>
             <!-- #TODO: Dynamic town list per municipality -->
             <select class="w-select" name="town" id="town">
-              <option value="Bitterfontein">
-                Bitterfontein
-              </option>
-              <option value="Doring Bay">
-                Doring Bay
-              </option>
-              <option value="Ebenhaezer">
-                Ebenhaezer
-              </option>
-              <option value="Klawer">
-                Klawer
-              </option>
-              <option value="Kliprand">
-                Kliprand
-              </option>
-              <option value="Koekenaa">
-                Koekenaa
-              </option>
-              <option value="Lutzville">
-                Lutzville
-              </option>
-              <option value="Molsvlei">
-                Molsvlei
-              </option>
-              <option value="Nuwerus">
-                Nuwerus
-              </option>
-              <option value="Putsekloof">
-                Putsekloof
-              </option>
-              <option value="Rietpoort">
-                Rietpoort
-              </option>
-              <option value="Stofkraal">
-                Stofkraal
-              </option>
-              <option value="Strandfontein">
-                Strandfontein
-              </option>
-              <option value="Vanrhynsdorp">
-                Vanrhynsdorp
-              </option>
-              <option value="Vredendal">
-                Vredendal
-              </option>
+              <option value="Bitterfontein">Bitterfontein</option>
+              <option value="Doring Bay">Doring Bay</option>
+              <option value="Ebenhaezer">Ebenhaezer</option>
+              <option value="Klawer">Klawer</option>
+              <option value="Kliprand">Kliprand</option>
+              <option value="Koekenaa">Koekenaa</option>
+              <option value="Lutzville">Lutzville</option>
+              <option value="Molsvlei">Molsvlei</option>
+              <option value="Nuwerus">Nuwerus</option>
+              <option value="Putsekloof">Putsekloof</option>
+              <option value="Rietpoort">Rietpoort</option>
+              <option value="Stofkraal">Stofkraal</option>
+              <option value="Strandfontein">Strandfontein</option>
+              <option value="Vanrhynsdorp">Vanrhynsdorp</option>
+              <option value="Vredendal">Vredendal</option>
             </select>
 
             <label for="issue">What is your comment about?</label>
             <select class="w-select" name="issue" id="issue">
-              <option>
-                Waste Management
-              </option>
-              <option>
-                Local Economic Development
-              </option>
-              <option>
-                Water &amp; Sanitation
-              </option>
-              <option>
-                Electricity
-              </option>
-              <option>
-                Housing
-              </option>
-              <option>
-                Roads
-              </option>
-              <option>
-                Safety &amp; Crime
-              </option>
-              <option>
-                Job creation
-              </option>
-              <option>
-                Youth Development
-              </option>
-              <option>
-                Arts &amp; Culture
-              </option>
-              <option>
-                Health
-              </option>
-              <option>
-                Library services
-              </option>
-              <option>
-                Home Affairs
-              </option>
-              <option>
-                SASSA (grants)
-              </option>
-              <option>
-                Social Development
-              </option>
-              <option>
-                Education
-              </option>
-              <option>
-                Public Transport
-              </option>
-              <option>
-                Agriculture &amp; Rural Development
-              </option>
-              <option>
-                Other
-              </option>
+              <option>Waste Management</option>
+              <option>Local Economic Development</option>
+              <option>Water &amp; Sanitation</option>
+              <option>Electricity</option>
+              <option>Housing</option>
+              <option>Roads</option>
+              <option>Safety &amp; Crime</option>
+              <option>Job creation</option>
+              <option>Youth Development</option>
+              <option>Arts &amp; Culture</option>
+              <option>Health</option>
+              <option>Library services</option>
+              <option>Home Affairs</option>
+              <option>SASSA (grants)</option>
+              <option>Social Development</option>
+              <option>Education</option>
+              <option>Public Transport</option>
+              <option>Agriculture &amp; Rural Development</option>
+              <option>Other</option>
             </select>
 
-            <label for="name">Name</label
-            ><input
+            <label for="name">Name</label>
+            <input
               type="text"
               class="w-input"
               maxlength="256"
@@ -245,8 +178,10 @@
               placeholder=""
               id="name"
               required="true"
-            /><label for="contact">Email Address or Contact Number</label
-            ><input
+            />
+
+            <label for="contact">Email Address or Contact Number</label>
+            <input
               type="text"
               class="w-input"
               maxlength="256"
@@ -259,7 +194,7 @@
             <div class="modal__form-submit">
               <input
                 type="submit"
-                value="Submit comment"
+                value="Submit feedback"
                 data-wait="Please wait..."
                 class="button primary-fill w-button"
               />
@@ -267,12 +202,12 @@
           </form>
           <div class="modal__response-form__success w-form-done">
             <div>
-              Thank you for your engagement. Your comment has been submitted!
+              Thank you for your engagement. Your feedback has been submitted!
             </div>
           </div>
           <div class="modal__response-form__error w-form-fail">
             <div>
-              Oops! Something went wrong while submitting your comment.
+              Oops! Something went wrong while submitting your feedback.
             </div>
           </div>
         </div>
@@ -541,7 +476,7 @@
                   <a
                     href="#"
                     class="button button--card-action modal-open w-button"
-                    >Submit comment</a
+                    >Submit feedback</a
                   >
                 </div>
               </div>
@@ -628,6 +563,21 @@
             IDP&nbsp;&amp;&nbsp;Budget activities:
           </div>
           <div class="activity-types__wrapper">
+            <div class="loading">
+              <div
+                style="
+                  -webkit-transform: translate3d(-50%, 0, 0) scale3d(1, 1, 1)
+                    rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);
+                  -moz-transform: translate3d(-50%, 0, 0) scale3d(1, 1, 1)
+                    rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);
+                  -ms-transform: translate3d(-50%, 0, 0) scale3d(1, 1, 1)
+                    rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);
+                  transform: translate3d(-50%, 0, 0) scale3d(1, 1, 1) rotateX(0)
+                    rotateY(0) rotateZ(0) skew(0, 0);
+                "
+                class="loading__gradient"
+              ></div>
+            </div>
             <div class="engagement-type hidden">
               <div
                 data-w-id="99e90b80-c7b8-67d9-97df-5c5706a02383"
@@ -660,21 +610,6 @@
                   </div>
                 </div>
               </div>
-            </div>
-            <div class="loading">
-              <div
-                style="
-                  -webkit-transform: translate3d(-50%, 0, 0) scale3d(1, 1, 1)
-                    rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);
-                  -moz-transform: translate3d(-50%, 0, 0) scale3d(1, 1, 1)
-                    rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);
-                  -ms-transform: translate3d(-50%, 0, 0) scale3d(1, 1, 1)
-                    rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);
-                  transform: translate3d(-50%, 0, 0) scale3d(1, 1, 1) rotateX(0)
-                    rotateY(0) rotateZ(0) skew(0, 0);
-                "
-                class="loading__gradient"
-              ></div>
             </div>
           </div>
         </div>
@@ -795,7 +730,7 @@
                       <a
                         href="#"
                         class="button button--card-action modal-open w-button"
-                        >Submit comment</a
+                        >Submit feedback</a
                       >
                     </div>
                   </div>
@@ -945,23 +880,23 @@
               </a>
               <a href="#" class="footer__link w-inline-block" target="_blank">
                 <div class="footer__muni-financial-performance hidden">
-                    Municipal financial performance
+                  Municipal financial performance
                 </div>
                 <div class="loading">
-                    <div
+                  <div
                     style="
-                        -webkit-transform: translate3d(-50%, 0, 0)
+                      -webkit-transform: translate3d(-50%, 0, 0)
                         scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0)
                         skew(0, 0);
-                        -moz-transform: translate3d(-50%, 0, 0) scale3d(1, 1, 1)
+                      -moz-transform: translate3d(-50%, 0, 0) scale3d(1, 1, 1)
                         rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);
-                        -ms-transform: translate3d(-50%, 0, 0) scale3d(1, 1, 1)
+                      -ms-transform: translate3d(-50%, 0, 0) scale3d(1, 1, 1)
                         rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);
-                        transform: translate3d(-50%, 0, 0) scale3d(1, 1, 1)
+                      transform: translate3d(-50%, 0, 0) scale3d(1, 1, 1)
                         rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);
                     "
                     class="loading__gradient"
-                    ></div>
+                  ></div>
                 </div>
               </a>
               <a href="#" class="footer__link w-inline-block">
@@ -1183,7 +1118,7 @@
                     <a
                       href="#"
                       class="button button--card-action modal-open w-button"
-                      >Submit comment</a
+                      >Submit feedback</a
                     >
                   </div>
                 </div>
