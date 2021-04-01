@@ -9,3 +9,11 @@
 .section.hidden, .is-hidden {
   display: none;
 }
+
+.primary-fill {
+  background-color: #ccc;
+}
+
+.primary-text {
+  color: #333;
+}
