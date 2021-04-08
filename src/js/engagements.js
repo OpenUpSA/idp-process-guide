@@ -1,4 +1,6 @@
 import { getDateText } from "./utils";
+import { RECAPTCHA_SITE_KEY } from "./recaptcha";
+
 let apiUrl = "";
 let apiEventSubmissionsUrl = "";
 let apiGeographyUrl = "";
@@ -63,9 +65,9 @@ export class Engagements {
     this.getEngagements();
     this.setFiltering();
     this.detectExternalLinkClick();
-    this.getGeographyData()
+    this.getGeographyData();
     this.bindCommentForm();
-  };
+  }
 
   //#TODO: Reused from geography.js, refactor
   getGeographyData = () => {
@@ -78,40 +80,61 @@ export class Engagements {
   };
 
   setupCommentForm = () => {
-    const issueElement = $('#issue')[0];
+    const issueElement = $("#issue")[0];
     issueElement.options.remove(0);
     eventSubmissionIssues.forEach((issue, index) => {
-      issueElement.options[issueElement.options.length] = new Option(issue, index);
+      issueElement.options[issueElement.options.length] = new Option(
+        issue,
+        index
+      );
     });
 
-    const townElement = $('#town')[0];
+    const townElement = $("#town")[0];
     townElement.options.remove(0);
     this.municipality.towns.forEach((town, index) => {
       townElement.options[townElement.options.length] = new Option(town, index);
     });
   };
 
-
-
   bindCommentForm = () => {
+    let self = this;
     $(document).on("submit", ".modals form", function (e) {
       e.preventDefault();
-
-      //TODO: Handle error state
-      $.post(apiEventSubmissionsUrl, {
-        submission: $("#comment").val(),
-        submission_issue: $("#issue").val(),
-        submitter_town: $("#town").val(),
-        submitter_name: $("#name").val(),
-        submitter_contact: $("#contact").val(),
-        event: $(".modals")[0].dataset.eventId,
-      });
-
-      $(".modals .modal__response-form__content").hide();
-      $(".modals .modal__response-form .w-form-fail").hide();
-      $(".modals .modal__response-form .w-form-done").show();
+      //TODO: Only allow form submission without Google reCaptcha in development?
+      if (grecaptcha) {
+        grecaptcha.ready(function () {
+          grecaptcha
+            .execute(RECAPTCHA_SITE_KEY, {
+              action: "event_comment_submit",
+            })
+            .then(function (token) {
+              self.postCommentForm(token);
+            });
+        });
+      } else {
+        self.postCommentForm();
+      }
       return true;
     });
+  };
+
+  postCommentForm = (token) => {
+    //TODO: Handle error state
+    $.post(apiEventSubmissionsUrl, {
+      submission: $("#comment").val(),
+      submission_issue: $("#issue").val(),
+      submitter_town: $("#town").val(),
+      submitter_name: $("#name").val(),
+      submitter_contact: $("#contact").val(),
+      event: $(".modals")[0].dataset.eventId,
+      recaptcha_token: token,
+    });
+
+    $(".modals form")[0].reset();
+
+    $(".modals .modal__response-form__content").hide();
+    $(".modals .modal__response-form .w-form-fail").hide();
+    $(".modals .modal__response-form .w-form-done").show();
   };
 
   setDomElements = () => {
@@ -291,7 +314,7 @@ export class Engagements {
           null,
           false
         );
-        
+
         self.appendRowToEngagementBlock(
           item,
           "fa fa-info",
