@@ -85,14 +85,14 @@ export class Engagements {
     eventSubmissionIssues.forEach((issue, index) => {
       issueElement.options[issueElement.options.length] = new Option(
         issue,
-        index
+        issue
       );
     });
 
     const townElement = $("#town")[0];
     townElement.options.remove(0);
     this.municipality.towns.forEach((town, index) => {
-      townElement.options[townElement.options.length] = new Option(town, index);
+      townElement.options[townElement.options.length] = new Option(town, town);
     });
   };
 
