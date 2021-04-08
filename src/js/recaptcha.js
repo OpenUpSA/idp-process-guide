@@ -4,7 +4,9 @@ export const RECAPTCHA_SITE_KEY = `${process.env.RECAPTCHA_SITE_KEY}`;
 //      is often blocked by legitimate browsers.
 export default class Recaptcha {
   constructor() {
-    this.addTag();
+    if (RECAPTCHA_SITE_KEY !== "undefined") {
+      this.addTag();
+    }
   }
 
   addTag = () => {

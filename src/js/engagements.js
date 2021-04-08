@@ -101,7 +101,7 @@ export class Engagements {
     $(document).on("submit", ".modals form", function (e) {
       e.preventDefault();
       //TODO: Only allow form submission without Google reCaptcha in development?
-      if (grecaptcha) {
+      if (RECAPTCHA_SITE_KEY !== "undefined") {
         grecaptcha.ready(function () {
           grecaptcha
             .execute(RECAPTCHA_SITE_KEY, {
