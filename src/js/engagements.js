@@ -283,13 +283,6 @@ export class Engagements {
         );
 
         $(".engagement-block__details", item).html("");
-        self.appendRowToEngagementBlock(
-          item,
-          "fa fa-info",
-          e.short_desc,
-          null,
-          false
-        );
 
         self.appendRowToEngagementBlock(
           item,
@@ -298,6 +291,15 @@ export class Engagements {
           null,
           false
         );
+        
+        self.appendRowToEngagementBlock(
+          item,
+          "fa fa-info",
+          e.short_desc,
+          null,
+          false
+        );
+
         e.actions.forEach((a) => {
           self.appendRowToEngagementBlock(
             item,
@@ -502,13 +504,6 @@ export class Engagements {
         );
 
         $(".engagement-block__details", item).html("");
-        self.appendRowToEngagementBlock(
-          item,
-          "fa fa-info",
-          e.short_desc,
-          null,
-          false
-        );
 
         self.appendRowToEngagementBlock(
           item,
@@ -517,6 +512,15 @@ export class Engagements {
           null,
           false
         );
+
+        self.appendRowToEngagementBlock(
+          item,
+          "fa fa-info",
+          e.short_desc,
+          null,
+          false
+        );
+
         e.actions.forEach((a) => {
           self.appendRowToEngagementBlock(
             item,
