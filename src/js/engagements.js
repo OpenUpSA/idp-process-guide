@@ -1,6 +1,8 @@
 import { getDateText } from "./utils";
 import { RECAPTCHA_SITE_KEY } from "./recaptcha";
 
+const CONTEXT = `${process.env.CONTEXT}`;
+
 let apiUrl = "";
 let apiEventSubmissionsUrl = "";
 let apiGeographyUrl = "";
@@ -130,7 +132,10 @@ export class Engagements {
       recaptcha_token: token,
     });
 
-    $(".modals form")[0].reset();
+    //Note: Useful for development to keep form details between submits
+    if (CONTEXT === "production") {
+      $(".modals form")[0].reset();
+    }
 
     $(".modals .modal__response-form__content").hide();
     $(".modals .modal__response-form .w-form-fail").hide();
