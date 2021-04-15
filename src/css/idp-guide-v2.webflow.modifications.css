@@ -21,3 +21,12 @@
 .engagement-block__button {
   display: unset;
 }
+
+.is-size-6 {
+  font-size: 0.75em;
+  font-weight: normal;
+}
+
+.is-line-height-1-5em {
+  line-height: 1.5em;
+}

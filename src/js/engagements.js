@@ -94,6 +94,12 @@ export class Engagements {
     this.municipality.towns.forEach((town, _index) => {
       townElement.options[townElement.options.length] = new Option(town, town);
     });
+
+
+    console.log(this.municipality.enquiry_email_address);
+    if (this.municipality.enquiry_email_address) {
+      $('.modal__response-form__success div').append('<br>For general enquiries contact <a href="mailto:' + this.municipality.enquiry_email_address + '">' + this.municipality.enquiry_email_address + '</a>');
+    }
   };
 
   bindCommentForm = () => {
