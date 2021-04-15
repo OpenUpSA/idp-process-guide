@@ -431,31 +431,24 @@ export class Engagements {
       event.data().categoryIcon
     );
     $(".modals .modal__engagement-date_date").text(event.data().eventDate);
+    $(".modals .modal__engagement-date").show();
 
     if (event.data().commentCloseDate) {
       $(".modals .modal__engagement-close_date").text(
         event.data().commentCloseDate
       );
-      $(".modals .modal__engagement-close_date")
-        .parents(".modal__engagement-open")
-        .show();
+      $(".modal__comment-close").show();
     } else {
-      $(".modals .modal__engagement-close_date")
-        .parents(".modal__engagement-open")
-        .hide();
+      $(".modal__comment-close").hide();
     }
 
     if (event.data().commentOpenDate) {
       $(".modals .modal__engagement-open_date").text(
         event.data().commentOpenDate
       );
-      $(".modals .modal__engagement-open_date")
-        .parents(".modal__engagement-open")
-        .show();
+      $(".modal__comment-open").show();
     } else {
-      $(".modals .modal__engagement-open_date")
-        .parents(".modal__engagement-open")
-        .hide();
+      $(".modal__comment-open").hide();
     }
 
     $(".modals .modal__engagement-open_date").text(
