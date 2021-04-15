@@ -112,6 +112,12 @@
             <h3 class="modal__form-title">
               Provide a comment to your municipality
             </h3>
+            
+            <label for="issue">What is your comment about?</label>
+            <select class="w-select" name="issue" id="issue" required>
+              <option value="">Select issue</option>
+            </select>
+
             <label for="comment"
               >Your comment</label
             >
@@ -127,14 +133,10 @@
 
             <label for="town">Your town</label>
             <!-- #TODO: Dynamic town list per municipality -->
-            <select class="w-select" name="town" id="town">
-              <option>Loading...</option>
+            <select class="w-select" name="town" id="town" required>
+              <option value="">Select town</option>
             </select>
 
-            <label for="issue">What is your comment about?</label>
-            <select class="w-select" name="issue" id="issue">
-              <option>Loading...</option>
-            </select>
 
             <label for="name">Your name</label>
             <input

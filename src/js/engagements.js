@@ -83,8 +83,7 @@ export class Engagements {
 
   setupCommentForm = () => {
     const issueElement = $("#issue")[0];
-    issueElement.options.remove(0);
-    eventSubmissionIssues.forEach((issue, index) => {
+    eventSubmissionIssues.forEach((issue, _index) => {
       issueElement.options[issueElement.options.length] = new Option(
         issue,
         issue
@@ -92,8 +91,7 @@ export class Engagements {
     });
 
     const townElement = $("#town")[0];
-    townElement.options.remove(0);
-    this.municipality.towns.forEach((town, index) => {
+    this.municipality.towns.forEach((town, _index) => {
       townElement.options[townElement.options.length] = new Option(town, town);
     });
   };
