@@ -1,5 +1,11 @@
 import { getDateText } from "./utils";
+import { RECAPTCHA_SITE_KEY } from "./recaptcha";
+
+const CONTEXT = `${process.env.CONTEXT}`;
+
 let apiUrl = "";
+let apiEventSubmissionsUrl = "";
+let apiGeographyUrl = "";
 
 /* category */
 let categoryLinkClone = null;
@@ -27,9 +33,33 @@ const engagementRowClass = ".engagement-block__details_row";
 let allEngagements = null;
 let allCategories = null;
 
+let eventSubmissionIssues = [
+  "Waste Management",
+  "Local Economic Development",
+  "Water & Sanitation",
+  "Electricity",
+  "Housing",
+  "Roads",
+  "Safety & Crime",
+  "Job creation",
+  "Youth Development",
+  "Arts & Culture",
+  "Health",
+  "Library services",
+  "Home Affairs",
+  "SASSA (grants)",
+  "Social Development",
+  "Education",
+  "Public Transport",
+  "Agriculture & Rural Development",
+  "Other",
+];
+
 export class Engagements {
   constructor(baseUrl, hostname, analytics) {
     apiUrl = `${baseUrl}/events?hostname=${hostname}`;
+    apiEventSubmissionsUrl = `${baseUrl}/event-submissions?hostname=${hostname}`;
+    apiGeographyUrl = `${baseUrl}/municipality?hostname=${hostname}`;
     this.analytics = analytics;
 
     //tab-link
@@ -37,7 +67,80 @@ export class Engagements {
     this.getEngagements();
     this.setFiltering();
     this.detectExternalLinkClick();
+    this.getGeographyData();
+    this.bindCommentForm();
   }
+
+  //#TODO: Reused from geography.js, refactor
+  getGeographyData = () => {
+    fetch(apiGeographyUrl)
+      .then((data) => data.json())
+      .then((data) => {
+        this.municipality = data;
+        this.setupCommentForm();
+      });
+  };
+
+  setupCommentForm = () => {
+    const issueElement = $("#issue")[0];
+    issueElement.options.remove(0);
+    eventSubmissionIssues.forEach((issue, index) => {
+      issueElement.options[issueElement.options.length] = new Option(
+        issue,
+        issue
+      );
+    });
+
+    const townElement = $("#town")[0];
+    townElement.options.remove(0);
+    this.municipality.towns.forEach((town, index) => {
+      townElement.options[townElement.options.length] = new Option(town, town);
+    });
+  };
+
+  bindCommentForm = () => {
+    let self = this;
+    $(document).on("submit", ".modals form", function (e) {
+      e.preventDefault();
+      //TODO: Only allow form submission without Google reCaptcha in development?
+      if (RECAPTCHA_SITE_KEY !== "undefined") {
+        grecaptcha.ready(function () {
+          grecaptcha
+            .execute(RECAPTCHA_SITE_KEY, {
+              action: "event_comment_submit",
+            })
+            .then(function (token) {
+              self.postCommentForm(token);
+            });
+        });
+      } else {
+        self.postCommentForm();
+      }
+      return true;
+    });
+  };
+
+  postCommentForm = (token) => {
+    //TODO: Handle error state
+    $.post(apiEventSubmissionsUrl, {
+      submission: $("#comment").val(),
+      submission_issue: $("#issue").val(),
+      submitter_town: $("#town").val(),
+      submitter_name: $("#name").val(),
+      submitter_contact: $("#contact").val(),
+      event: $(".modals")[0].dataset.eventId,
+      recaptcha_token: token,
+    });
+
+    //Note: Useful for development to keep form details between submits
+    if (CONTEXT === "production") {
+      $(".modals form")[0].reset();
+    }
+
+    $(".modals .modal__response-form__content").hide();
+    $(".modals .modal__response-form .w-form-fail").hide();
+    $(".modals .modal__response-form .w-form-done").show();
+  };
 
   setDomElements = () => {
     categoryLinkWrapper = $(".tabs-menu");
@@ -78,6 +181,7 @@ export class Engagements {
         this.showActiveEngagements(allEngagements);
         this.showCategories(data);
         this.setBasedOnEventDataDisplay(data[data.length - 1].end_date);
+        this.detectEventView();
       });
   };
 
@@ -178,6 +282,26 @@ export class Engagements {
     if (data !== null && data.length > 0) {
       data.forEach((e) => {
         let item = engagementClone.cloneNode(true);
+        const dateText = getDateText(e);
+
+        //TODO: Refactor
+        item.dataset.eventId = e.id;
+        item.dataset.commentOpenDate = e.comment_open_date;
+        item.dataset.commentCloseDate = e.comment_close_date;
+        item.dataset.categoryIcon = e.category.icon;
+        item.dataset.eventDate = dateText;
+        item.dataset.shortDesc = e.short_desc;
+        item.onclick = this.eventClick;
+
+        if (
+          !this.isTodayWithinCommentPeriod(
+            e.comment_open_date,
+            e.comment_close_date
+          )
+        ) {
+          $(".engagement-block__button", item).hide();
+        }
+
         $(".engagement-block__header .engagement-block__icon div", item).attr(
           "class",
           e.category.icon
@@ -187,6 +311,15 @@ export class Engagements {
         );
 
         $(".engagement-block__details", item).html("");
+
+        self.appendRowToEngagementBlock(
+          item,
+          "fa fa-calendar",
+          dateText,
+          null,
+          false
+        );
+
         self.appendRowToEngagementBlock(
           item,
           "fa fa-info",
@@ -195,14 +328,6 @@ export class Engagements {
           false
         );
 
-        const dateText = getDateText(e);
-        self.appendRowToEngagementBlock(
-          item,
-          "fa fa-calendar",
-          dateText,
-          null,
-          false
-        );
         e.actions.forEach((a) => {
           self.appendRowToEngagementBlock(
             item,
@@ -230,6 +355,7 @@ export class Engagements {
     isActionRow = false
   ) => {
     let row = engagementRowClone.cloneNode(true);
+    $(".engagement-block__rich-text", row).empty();
     $(".engagement-block__details_icon div", row).attr("class", iconClass);
     if (isActionRow) {
       if (rowDate !== null && rowDate !== "") {
@@ -286,22 +412,117 @@ export class Engagements {
     });
   };
 
+  detectEventView = () => {
+    const url = new URL(window.location.href);
+    const eventId = url.searchParams.get("event");
+    if (eventId) {
+      const event = $(`[data-event-id=${eventId}]`).first();
+      this.showEventModal(event);
+    }
+  };
+
+  showEventModal = (event) => {
+    $(".modals")[0].dataset.eventId = event.data().eventId;
+    $(".modals .modal__heading").text(
+      event.find(".engagement-block__header .engagement-block__title").text()
+    );
+    $(".modals .modal__header-icon div").attr(
+      "class",
+      event.data().categoryIcon
+    );
+    $(".modals .modal__engagement-date_date").text(event.data().eventDate);
+
+    if (event.data().commentCloseDate) {
+      $(".modals .modal__engagement-close_date").text(
+        event.data().commentCloseDate
+      );
+      $(".modals .modal__engagement-close_date")
+        .parents(".modal__engagement-open")
+        .show();
+    } else {
+      $(".modals .modal__engagement-close_date")
+        .parents(".modal__engagement-open")
+        .hide();
+    }
+
+    if (event.data().commentOpenDate) {
+      $(".modals .modal__engagement-open_date").text(
+        event.data().commentOpenDate
+      );
+      $(".modals .modal__engagement-open_date")
+        .parents(".modal__engagement-open")
+        .show();
+    } else {
+      $(".modals .modal__engagement-open_date")
+        .parents(".modal__engagement-open")
+        .hide();
+    }
+
+    $(".modals .modal__engagement-open_date").text(
+      event.data().commentOpenDate
+    );
+    $(".modals .modal__event-info p").text(event.data().shortDesc);
+    $(".modals").removeClass("hidden");
+
+    if (
+      this.isTodayWithinCommentPeriod(
+        event.data().commentOpenDate,
+        event.data().commentCloseDate
+      )
+    ) {
+      $(".modals .modal__response-form .w-form-fail").hide();
+      $(".modals .modal__response-form .w-form-done").hide();
+      $(".modals .modal__response-form").show();
+      $(".modals .modal__response-form__content").show();
+    } else {
+      $(".modals .modal__response-form").hide();
+    }
+
+    $(".modals").first().show();
+  };
+
+  eventClick = (e) => {
+    const currentTarget = e.currentTarget;
+    const event = $(currentTarget);
+    this.showEventModal(event);
+  };
+
+  isTodayWithinCommentPeriod = (openDate, closeDate) => {
+    let todaysDate = new Date();
+    let commentOpenDate = new Date(openDate);
+    let commentCloseDate = new Date(closeDate);
+
+    todaysDate.setHours(0, 0, 0, 0);
+    commentOpenDate.setHours(0, 0, 0, 0);
+    commentCloseDate.setHours(0, 0, 0, 0);
+
+    return commentOpenDate <= todaysDate && commentCloseDate >= todaysDate;
+  };
+
   showActiveEngagements = (allEngagements) => {
     let self = this;
-    let todaysDate = new Date();
-    todaysDate.setHours(0, 0, 0, 0);
 
     let activeEngagements = allEngagements.filter((engagement) => {
-      let commentOpenDate = new Date(engagement.comment_open_date);
-      let commentCloseDate = new Date(engagement.comment_close_date);
-      commentOpenDate.setHours(0, 0, 0, 0);
-      commentCloseDate.setHours(0, 0, 0, 0);
-      return commentOpenDate <= todaysDate && commentCloseDate >= todaysDate;
+      return this.isTodayWithinCommentPeriod(
+        engagement.comment_open_date,
+        engagement.comment_close_date
+      );
     });
 
     if (activeEngagements && activeEngagements.length > 0) {
       activeEngagements.forEach((e) => {
+        const dateText = getDateText(e);
         let item = engagementClone.cloneNode(true);
+
+        //TODO: Refactor
+        item.dataset.eventId = e.id;
+        item.dataset.commentOpenDate = e.comment_open_date;
+        item.dataset.commentCloseDate = e.comment_close_date;
+        item.dataset.categoryIcon = e.category.icon;
+        item.dataset.eventDate = dateText;
+        item.dataset.shortDesc = e.short_desc;
+        item.onclick = this.eventClick;
+
         $(".engagement-block__header .engagement-block__icon div", item).attr(
           "class",
           e.category.icon
@@ -311,6 +532,15 @@ export class Engagements {
         );
 
         $(".engagement-block__details", item).html("");
+
+        self.appendRowToEngagementBlock(
+          item,
+          "fa fa-calendar",
+          dateText,
+          null,
+          false
+        );
+
         self.appendRowToEngagementBlock(
           item,
           "fa fa-info",
@@ -319,14 +549,6 @@ export class Engagements {
           false
         );
 
-        const dateText = getDateText(e);
-        self.appendRowToEngagementBlock(
-          item,
-          "fa fa-calendar",
-          dateText,
-          null,
-          false
-        );
         e.actions.forEach((a) => {
           self.appendRowToEngagementBlock(
             item,
@@ -340,9 +562,9 @@ export class Engagements {
         $(".active-engagements__wrapper").append(item);
       });
     } else {
-      $('.active-engagements__no-data').removeClass('hidden');
+      $(".active-engagements__no-data").removeClass("hidden");
     }
-    $('.active-engagements__wrapper .loading').remove();
+    $(".active-engagements__wrapper .loading").remove();
   };
 
   /**
