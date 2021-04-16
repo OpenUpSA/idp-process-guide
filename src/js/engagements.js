@@ -76,7 +76,7 @@ export class Engagements {
         this.municipality = data;
         this.getEngagements();
         this.setFiltering();
-        
+
         if (this.municipality.event_submission_form_enabled) {
           this.setupCommentForm();
           this.bindCommentForm();
@@ -442,6 +442,8 @@ export class Engagements {
   };
 
   showEventModal = (event) => {
+    let details = $(event).find('.engagement-block__details')[0].cloneNode(true);
+
     $(".modals")[0].dataset.eventId = event.data().eventId;
     $(".modals .modal__heading").text(
       event.find(".engagement-block__header .engagement-block__title").text()
@@ -474,7 +476,8 @@ export class Engagements {
     $(".modals .modal__engagement-open_date").text(
       event.data().commentOpenDate
     );
-    $(".modals .modal__event-info p").text(event.data().shortDesc);
+    $(".modals .modal__event-info").empty();
+    $(".modals .modal__event-info").first().append(details);
     $(".modals").removeClass("hidden");
 
     if (
@@ -488,7 +491,7 @@ export class Engagements {
       $(".modals .modal__response-form .w-form-done").hide();
       $(".modals .modal__response-form").show();
       $(".modals .modal__response-form__content").show();
-    } else if (!this.municipality.event_submission_form_enabled &&
+    } else if (!this.municipality.event_submission_form_enabled && this.municipality.enquiry_email_address &&
       this.isTodayWithinCommentPeriod(
         event.data().commentOpenDate,
         event.data().commentCloseDate
