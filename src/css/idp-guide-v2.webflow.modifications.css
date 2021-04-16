@@ -30,3 +30,11 @@
 .is-line-height-1-5em {
   line-height: 1.5em;
 }
+
+.is-color-white {
+  color: white;
+}
+
+.is-color-white a {
+  color: white;
+}

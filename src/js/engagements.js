@@ -64,11 +64,8 @@ export class Engagements {
 
     //tab-link
     this.setDomElements();
-    this.getEngagements();
-    this.setFiltering();
-    this.detectExternalLinkClick();
     this.getGeographyData();
-    this.bindCommentForm();
+    this.detectExternalLinkClick();
   }
 
   //#TODO: Reused from geography.js, refactor
@@ -77,7 +74,13 @@ export class Engagements {
       .then((data) => data.json())
       .then((data) => {
         this.municipality = data;
-        this.setupCommentForm();
+        this.getEngagements();
+        this.setFiltering();
+        
+        if (this.municipality.event_submission_form_enabled) {
+          this.setupCommentForm();
+          this.bindCommentForm();
+        }
       });
   };
 
@@ -95,11 +98,19 @@ export class Engagements {
       townElement.options[townElement.options.length] = new Option(town, town);
     });
 
-
-    console.log(this.municipality.enquiry_email_address);
     if (this.municipality.enquiry_email_address) {
       $('.modal__response-form__success div').append('<br>For general enquiries contact <a href="mailto:' + this.municipality.enquiry_email_address + '">' + this.municipality.enquiry_email_address + '</a>');
     }
+
+    $(document).on("change", "#issue", function (e) {
+      if (e.currentTarget.value == 'Other') {
+        $('.show-if-other').slideDown();
+        $('.show-if-other input[disabled]').removeAttr('disabled');
+      } else {
+        $('.show-if-other').slideUp();
+        $('.show-if-other input').attr('disabled', 'disabled');
+      }
+    });
   };
 
   bindCommentForm = () => {
@@ -125,10 +136,14 @@ export class Engagements {
   };
 
   postCommentForm = (token) => {
+    let issue = $("#issue").val();
+    if (issue == 'Other') {
+      issue = issue + ': ' + $('#issue-other').val();
+    }
     //TODO: Handle error state
     $.post(apiEventSubmissionsUrl, {
       submission: $("#comment").val(),
-      submission_issue: $("#issue").val(),
+      submission_issue: issue,
       submitter_town: $("#town").val(),
       submitter_name: $("#name").val(),
       submitter_contact: $("#contact").val(),
@@ -137,9 +152,10 @@ export class Engagements {
     });
 
     //Note: Useful for development to keep form details between submits
-    if (CONTEXT === "production") {
-      $(".modals form")[0].reset();
-    }
+    //if (CONTEXT === "production") {
+    $(".modals form")[0].reset();
+    //}
+    $('#issue').change()
 
     $(".modals .modal__response-form__content").hide();
     $(".modals .modal__response-form .w-form-fail").hide();
@@ -462,6 +478,7 @@ export class Engagements {
     $(".modals").removeClass("hidden");
 
     if (
+      this.municipality.event_submission_form_enabled &&
       this.isTodayWithinCommentPeriod(
         event.data().commentOpenDate,
         event.data().commentCloseDate
@@ -471,7 +488,17 @@ export class Engagements {
       $(".modals .modal__response-form .w-form-done").hide();
       $(".modals .modal__response-form").show();
       $(".modals .modal__response-form__content").show();
-    } else {
+    } else if (!this.municipality.event_submission_form_enabled &&
+      this.isTodayWithinCommentPeriod(
+        event.data().commentOpenDate,
+        event.data().commentCloseDate
+      )) {
+      $(".modals .modal__response-form").show();
+      $(".modals .modal__response-form__content").hide();
+      $(".modals .modal__response-form .w-form-done").show();
+      $('.modal__response-form__success div').html('To comment on this engagement contact <a href="mailto:' + this.municipality.enquiry_email_address + '">' + this.municipality.enquiry_email_address + '</a>');
+    }
+    else {
       $(".modals .modal__response-form").hide();
     }
 
