@@ -46,3 +46,7 @@
 .modals .is-extra-information {
   display: flex;
 }
+
+.mt-6 {
+  margin-top: 1em;
+}
