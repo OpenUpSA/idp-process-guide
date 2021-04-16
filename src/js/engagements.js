@@ -332,13 +332,15 @@ export class Engagements {
 
         $(".engagement-block__details", item).html("");
 
-        self.appendRowToEngagementBlock(
-          item,
-          "fa fa-calendar",
-          dateText,
-          null,
-          false
-        );
+        if (e.actions.length == 0) {
+          self.appendRowToEngagementBlock(
+            item,
+            "fa fa-calendar",
+            dateText,
+            null,
+            false
+          );
+        }
 
         self.appendRowToEngagementBlock(
           item,
@@ -348,7 +350,7 @@ export class Engagements {
           false
         );
 
-        e.actions.sort((a, b) => {return a['id'] > b['id']}).forEach((a) => {
+        e.actions.sort((a, b) => { return a['id'] > b['id'] }).forEach((a) => {
           self.appendRowToEngagementBlock(
             item,
             a.icon,
@@ -560,13 +562,15 @@ export class Engagements {
 
         $(".engagement-block__details", item).html("");
 
-        self.appendRowToEngagementBlock(
-          item,
-          "fa fa-calendar",
-          dateText,
-          null,
-          false
-        );
+        if (e.actions.length == 0) {
+          self.appendRowToEngagementBlock(
+            item,
+            "fa fa-calendar",
+            dateText,
+            null,
+            false
+          );
+        }
 
         self.appendRowToEngagementBlock(
           item,
@@ -576,7 +580,7 @@ export class Engagements {
           false
         );
 
-        e.actions.sort((a, b) => {return a['id'] > b['id']}).forEach((a) => {
+        e.actions.sort((a, b) => { return a['id'] > b['id'] }).forEach((a) => {
           self.appendRowToEngagementBlock(
             item,
             a.icon,
