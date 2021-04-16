@@ -356,7 +356,8 @@ export class Engagements {
             a.icon,
             a.description_html,
             a.confirmed_date,
-            true
+            true,
+            a.extra 
           );
         });
 
@@ -374,9 +375,15 @@ export class Engagements {
     iconClass,
     text,
     rowDate,
-    isActionRow = false
+    isActionRow = false,
+    isExtra = false,
   ) => {
     let row = engagementRowClone.cloneNode(true);
+
+    if (isExtra) {
+      row.classList.add('is-extra-information');
+    }
+
     $(".engagement-block__rich-text", row).empty();
     $(".engagement-block__details_icon div", row).attr("class", iconClass);
     if (isActionRow) {
@@ -586,7 +593,8 @@ export class Engagements {
             a.icon,
             a.description_html,
             a.confirmed_date,
-            true
+            true,
+            a.extra
           );
         });
 

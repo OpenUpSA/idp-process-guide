@@ -38,3 +38,11 @@
 .is-color-white a {
   color: white;
 }
+
+.is-extra-information {
+  display: none;
+}
+
+.modals .is-extra-information {
+  display: flex;
+}
