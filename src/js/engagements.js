@@ -500,15 +500,6 @@ export class Engagements {
       $(".modals .modal__response-form .w-form-done").hide();
       $(".modals .modal__response-form").show();
       $(".modals .modal__response-form__content").show();
-    } else if (!this.municipality.event_submission_form_enabled && this.municipality.enquiry_email_address &&
-      this.isTodayWithinCommentPeriod(
-        event.data().commentOpenDate,
-        event.data().commentCloseDate
-      )) {
-      $(".modals .modal__response-form").show();
-      $(".modals .modal__response-form__content").hide();
-      $(".modals .modal__response-form .w-form-done").show();
-      $('.modal__response-form__success div').html('To comment on this engagement contact <a href="mailto:' + this.municipality.enquiry_email_address + '">' + this.municipality.enquiry_email_address + '</a>');
     }
     else {
       $(".modals .modal__response-form").hide();
