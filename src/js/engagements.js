@@ -348,7 +348,7 @@ export class Engagements {
           false
         );
 
-        e.actions.forEach((a) => {
+        e.actions.sort((a, b) => {return a['id'] > b['id']}).forEach((a) => {
           self.appendRowToEngagementBlock(
             item,
             a.icon,
@@ -576,7 +576,7 @@ export class Engagements {
           false
         );
 
-        e.actions.forEach((a) => {
+        e.actions.sort((a, b) => {return a['id'] > b['id']}).forEach((a) => {
           self.appendRowToEngagementBlock(
             item,
             a.icon,
