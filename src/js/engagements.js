@@ -6,6 +6,7 @@ const CONTEXT = `${process.env.CONTEXT}`;
 let apiUrl = "";
 let apiEventSubmissionsUrl = "";
 let apiGeographyUrl = "";
+let showEventForm = false;
 
 /* category */
 let categoryLinkClone = null;
@@ -56,7 +57,8 @@ let eventSubmissionIssues = [
 ];
 
 export class Engagements {
-  constructor(baseUrl, hostname, analytics) {
+  constructor(baseUrl, hostname, analytics, showForm) {
+    showEventForm = showForm;
     apiUrl = `${baseUrl}/events?hostname=${hostname}`;
     apiEventSubmissionsUrl = `${baseUrl}/event-submissions?hostname=${hostname}`;
     apiGeographyUrl = `${baseUrl}/municipality?hostname=${hostname}`;
@@ -77,7 +79,7 @@ export class Engagements {
         this.getEngagements();
         this.setFiltering();
 
-        if (this.municipality.event_submission_form_enabled) {
+        if (this.municipality.event_submission_form_enabled || showEventForm) {
           this.setupCommentForm();
           this.bindCommentForm();
         }
@@ -490,7 +492,7 @@ export class Engagements {
     $(".modals").removeClass("hidden");
 
     if (
-      this.municipality.event_submission_form_enabled &&
+      (this.municipality.event_submission_form_enabled || showEventForm) &&
       this.isTodayWithinCommentPeriod(
         event.data().commentOpenDate,
         event.data().commentCloseDate

@@ -7,7 +7,8 @@ const init = () => {
     const url = new URL(window.location.href);
     const hostname = url.searchParams.get('hostname') || window.location.hostname;
     const baseUrl = getSessionBaseUrl() || process.env.BASE_URL;
-    new Load(baseUrl, hostname, new Analytics());
+    const showForm = url.searchParams.get('form') || false;
+    new Load(baseUrl, hostname, new Analytics(), showForm);
     new Recaptcha();
 }
 
