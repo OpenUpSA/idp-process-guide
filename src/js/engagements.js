@@ -100,7 +100,11 @@ export class Engagements {
       townElement.options[townElement.options.length] = new Option(town, town);
     });
 
-    if (this.municipality.enquiry_email_address) {
+    console.log(this.municipality);
+
+    if (this.municipality.post_submission_message) {
+      $('.modal__response-form__success div').html(this.municipality.post_submission_message);
+    } else if (this.municipality.enquiry_email_address) {
       $('.modal__response-form__success div').append('<br>For general enquiries contact <a href="mailto:' + this.municipality.enquiry_email_address + '">' + this.municipality.enquiry_email_address + '</a>');
     }
 
@@ -359,7 +363,7 @@ export class Engagements {
             a.description_html,
             a.confirmed_date,
             true,
-            a.extra 
+            a.extra
           );
         });
 
