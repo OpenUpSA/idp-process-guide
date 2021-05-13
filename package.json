@@ -21,7 +21,7 @@
     "parcel": "^1.12.4",
     "parcel-bundler": "^1.12.4",
     "parcel-plugin-data-src": "^1.0.1",
-    "parcel-plugin-static-files-copy": "^2.6.0",
+    "parcel-plugin-static-files-copy": "^2.5.0",
     "shx": "^0.3.3"
   },
   "scripts": {
@@ -47,7 +47,11 @@
   },
   "staticFiles": {
     "staticPath": {
-      "staticPath": "src/documents/lottieflow-menu-nav-08-ffffff-easey.json",
+      "staticPath": [
+        "src/documents/lottieflow-menu-nav-08-ffffff-easey.json",
+        "src/documents/001-understanding-the-idp.pdf",
+        "src/documents/002-understanding-the-phases-of-the-idp.pdf"
+      ],
       "staticOutDir": "documents"
     }
   }
