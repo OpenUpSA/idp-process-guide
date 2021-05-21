@@ -14,7 +14,7 @@ const loadMunicipality = async (url) => {
   const geography = await new Geography(baseUrl, hostname);
   
   if (geography.municipality.detail === "Not found.") {
-    document.location = '/under-construction.html';
+    document.location = '/under-construction';
   } else {
     new Engagements(baseUrl, hostname, analytics, showForm);
     new Categories(baseUrl, hostname, analytics);
