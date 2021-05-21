@@ -1236,6 +1236,12 @@ label {
   font-size: 1em;
 }
 
+.button.is--uc-link {
+  margin-top: 2em;
+  margin-right: 0em;
+  margin-bottom: 0em;
+}
+
 .button-icon__wrap {
   margin-right: -4px;
   padding-left: 4px;
@@ -4701,6 +4707,47 @@ label {
   grid-template-rows: auto;
 }
 
+.under-construction {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.uc-image {
+  width: 600px;
+  max-width: 80vw;
+  margin-bottom: 2em;
+}
+
+.uc-heading {
+  margin-top: 0px;
+  color: #635bff;
+  line-height: 1.1;
+  text-align: center;
+}
+
+.uc-subheading {
+  color: #333246;
+  font-size: 1.4em;
+  text-align: center;
+}
+
 @media screen and (max-width: 991px) {
   .dark {
     font-size: 12px;
@@ -5281,6 +5328,14 @@ label {
     -ms-grid-columns: 1fr;
     grid-template-columns: 1fr;
   }
+
+  .uc-heading {
+    font-size: 3em;
+  }
+
+  .uc-subheading {
+    font-size: 1.2em;
+  }
 }
 
 @media screen and (max-width: 479px) {
@@ -5693,6 +5748,10 @@ label {
 
   .modal__header {
     margin-right: 37px;
+  }
+
+  .uc-heading {
+    font-size: 2.3em;
   }
 }
 

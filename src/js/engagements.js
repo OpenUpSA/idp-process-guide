@@ -100,8 +100,6 @@ export class Engagements {
       townElement.options[townElement.options.length] = new Option(town, town);
     });
 
-    console.log(this.municipality);
-
     if (this.municipality.post_submission_message) {
       $('.modal__response-form__success div').html(this.municipality.post_submission_message);
     } else if (this.municipality.enquiry_email_address) {
