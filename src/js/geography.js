@@ -2,9 +2,11 @@ let apiUrl = "";
 
 export class Geography {
   constructor(baseUrl, hostname) {
-    apiUrl = `${baseUrl}/municipality?hostname=${hostname}`;
-
-    this.getGeographyData();
+    return (async () => {
+      apiUrl = `${baseUrl}/municipality?hostname=${hostname}`;
+      await this.getGeographyData();
+      return this;
+    })();
   }
 
   setCustomTheme = (data) => {
@@ -24,10 +26,11 @@ export class Geography {
         }`;
   };
 
-  getGeographyData = () => {
-    fetch(apiUrl)
+  getGeographyData = async () => {
+    await fetch(apiUrl)
       .then((data) => data.json())
       .then((data) => {
+        this.municipality = data;
         this.setHeadContent(data);
         this.setBodyContent(data);
         this.setFooterContent(data);
@@ -59,7 +62,10 @@ export class Geography {
     //todo:this shouldnt be here - emre
     this.showFooterLink(".footer__muni-site", data.homepage_url);
     this.showFooterLink(".footer__muni-bylaws", data.by_laws_url);
-    this.showFooterLink(".footer__muni-financial-performance", data.financial_performance_url);
+    this.showFooterLink(
+      ".footer__muni-financial-performance",
+      data.financial_performance_url
+    );
     this.showFooterLink(".footer__ward-councillor", data.ward_councillor_url);
 
     $(".footer-description__wrap .footer__description").removeClass("hidden");
