@@ -42,7 +42,6 @@ export class Geography {
   };
 
   setHeadContent = (data) => {
-    console.log({data});
     if (data.page_title) {
       $("title").html(data.page_title);
     }
@@ -71,7 +70,6 @@ export class Geography {
   }
 
   setFooterContent = (data) => {
-    //todo:this shouldnt be here - emre
     const footerLinkWrapper = $(footerLinkWrapperClass)[1];
 
     this.createFooterLink('Municipal website', data.homepage_url, footerLinkWrapper);
@@ -85,16 +83,6 @@ export class Geography {
 
     $(footerLinkWrapper).find(footerLinkClass)[0].remove();
     $(footerLinkWrapper).find('.loading').remove();
-
-    /*this.showFooterLink(".footer__muni-site", data.homepage_url);
-    this.showFooterLink(".footer__muni-bylaws", data.by_laws_url);
-    this.showFooterLink(
-      ".footer__muni-financial-performance",
-      data.financial_performance_url
-    );
-    this.showFooterLink(".footer__ward-councillor", data.ward_councillor_url);
-
-    */
   };
 
   showFooterLink = (selector, url) => {
