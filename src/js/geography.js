@@ -1,5 +1,8 @@
 let apiUrl = "";
 
+const footerLinkWrapperClass = '.footer__links';
+const footerLinkClass = '.footer__link';
+
 export class Geography {
   constructor(baseUrl, hostname) {
     return (async () => {
@@ -39,6 +42,7 @@ export class Geography {
   };
 
   setHeadContent = (data) => {
+    console.log({data});
     if (data.page_title) {
       $("title").html(data.page_title);
     }
@@ -58,9 +62,31 @@ export class Geography {
     $(".footer__description_municipality strong").text(data.name);
   };
 
+  createFooterLink = (text, url, footerLinkWrapper) => {
+    let footerLinkClone = $(footerLinkClass)[0].cloneNode(true);
+    $(footerLinkClone).attr("href", url);
+    $(footerLinkClone).find('.loading').remove();
+    $(footerLinkClone).text(text);
+    $(footerLinkWrapper).append(footerLinkClone);
+  }
+
   setFooterContent = (data) => {
     //todo:this shouldnt be here - emre
-    this.showFooterLink(".footer__muni-site", data.homepage_url);
+    const footerLinkWrapper = $(footerLinkWrapperClass)[1];
+
+    this.createFooterLink('Municipal website', data.homepage_url, footerLinkWrapper);
+    this.createFooterLink('Municipal by-laws', data.by_laws_url, footerLinkWrapper);
+    this.createFooterLink('Municipal financial performance', data.financial_performance_url, footerLinkWrapper);
+    this.createFooterLink('Find your ward councillor', data.ward_councillor_url, footerLinkWrapper);
+    
+    $(".footer-description__wrap .footer__description").removeClass("hidden");
+    $(".footer-description__wrap .loading").addClass("hidden");
+
+
+    $(footerLinkWrapper).find(footerLinkClass)[0].remove();
+    $(footerLinkWrapper).find('.loading').remove();
+
+    /*this.showFooterLink(".footer__muni-site", data.homepage_url);
     this.showFooterLink(".footer__muni-bylaws", data.by_laws_url);
     this.showFooterLink(
       ".footer__muni-financial-performance",
@@ -68,8 +94,7 @@ export class Geography {
     );
     this.showFooterLink(".footer__ward-councillor", data.ward_councillor_url);
 
-    $(".footer-description__wrap .footer__description").removeClass("hidden");
-    $(".footer-description__wrap .loading").addClass("hidden");
+    */
   };
 
   showFooterLink = (selector, url) => {
