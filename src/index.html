@@ -99,7 +99,7 @@
         <div class="modal__event-info w-richtext">
           <p>Loading...</p>
         </div>
-        <div class="modal__response-form hidden w-form">
+        <div class="modal__response-form hidden">
           <form
             id="wf-form-Email-Form"
             name="wf-form-Email-Form"
@@ -108,9 +108,46 @@
           >
             <h3 class="modal__form-title">
               Submit a comment to your municipality
+              <br />
+              <span class="is-size-6">* All fields required</span>
             </h3>
-            <label for="name">Name</label
-            ><input
+            <label for="issue">What is your comment about?</label>
+            <select class="w-select" name="issue" id="issue" required>
+              <option value="">Select issue</option>
+            </select>
+            <div class="hidden show-if-other">
+              <label for="issue-other">Other issue</label>
+              <input
+                disabled
+                type="text"
+                class="w-input"
+                maxlength="256"
+                name="issue"
+                id="issue-other"
+                data-name="issue"
+                placeholder=""
+                required="true"
+              />
+            </div>
+
+            <label for="comment">Your comment</label>
+            <textarea
+              required="true"
+              class="w-input"
+              name="comment"
+              id="comment"
+              placeholder=""
+              maxlength="5000"
+              rows="5"
+            ></textarea>
+
+            <label for="town">Your town</label>
+            <select class="w-select" name="town" id="town" required>
+              <option value="">Select town</option>
+            </select>
+
+            <label for="name">Your name</label>
+            <input
               type="text"
               class="w-input"
               maxlength="256"
@@ -118,23 +155,20 @@
               data-name="Name"
               placeholder=""
               id="name"
-            /><label for="email">Email Address</label
-            ><input
-              type="email"
+              required="true"
+            />
+
+            <label for="contact">Your email address or contact number</label>
+            <input
+              type="text"
               class="w-input"
               maxlength="256"
-              name="email"
-              data-name="Email"
+              name="contact"
+              data-name="contact"
               placeholder=""
-              id="email"
-              required=""
-            /><label>Form Label</label
-            ><select id="field" name="field" class="w-select">
-              <option value="">Select one...</option>
-              <option value="First">First Choice</option>
-              <option value="Second">Second Choice</option>
-              <option value="Third">Third Choice</option>
-            </select>
+              id="contact"
+              required="true"
+            />
             <div class="modal__form-submit">
               <input
                 type="submit"
