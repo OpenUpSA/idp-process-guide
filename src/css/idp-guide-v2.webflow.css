@@ -4748,6 +4748,11 @@ label {
   text-align: center;
 }
 
+.footer-link {
+  position: relative;
+  z-index: 1;
+}
+
 @media screen and (max-width: 991px) {
   .dark {
     font-size: 12px;
